@@ -9,6 +9,7 @@ namespace Locadora.Controllers
 {
     public class BaseController : Controller
     {
+
         private string _caminhoErro = ConfigurationManager.AppSettings["CaminhoErro"];
 
         public string CaminhoErro
@@ -30,7 +31,6 @@ namespace Locadora.Controllers
             get { return _action; }
         }
 
-
         //As propriedades precisam inevitavelmente estar neste evento
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
@@ -41,19 +41,13 @@ namespace Locadora.Controllers
             }
             catch (Exception e)
             {
-                ErroSemAction(e);
+                Erro(e);
             }
         }
 
-        protected ViewResult ErroComAction(Exception e)
+        protected ActionResult Erro(Exception e)
         {
             return View(CaminhoErro, new HandleErrorInfo(e, this.NomeController, this.NomeAction));
         }
-
-        protected void ErroSemAction(Exception e)
-        {
-            RedirectToAction(CaminhoErro, new HandleErrorInfo(e, this.NomeController, this.NomeAction));
-        }
-
     }
 }

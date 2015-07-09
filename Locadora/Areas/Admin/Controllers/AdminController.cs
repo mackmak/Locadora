@@ -11,6 +11,7 @@ using Locadora.Controllers;
 
 namespace Locadora.Areas.Admin.Controllers
 {
+    [HandleError(View="~/Shared/Error")]
     public class AdminController : BaseController
     {
         // GET: Admin/Admin
@@ -45,14 +46,21 @@ namespace Locadora.Areas.Admin.Controllers
             }
             catch (Exception e)
             {
-               return ErroComAction(e);
+               return Erro(e);
             }
         }
 
         // GET: Admin/Admin/Alterar/5
         public ActionResult Alterar(int id)
         {
-            return View(new JogoViewModel(id));
+            try
+            {
+                return View(new JogoViewModel(id));
+            }
+            catch (Exception e)
+            {
+                return Erro(e);
+            }
         }
 
         // POST: Admin/Admin/Alterar/5
@@ -67,9 +75,9 @@ namespace Locadora.Areas.Admin.Controllers
 
                 return View(viewModel);
             }
-            catch
+            catch(Exception e)
             {
-                return View();
+                return Erro(e);
             }
         }
 

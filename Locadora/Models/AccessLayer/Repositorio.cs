@@ -30,7 +30,7 @@ namespace Locadora.Models.ViewModels
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                throw;
             }
             return listaRetorno;
         }
@@ -38,9 +38,16 @@ namespace Locadora.Models.ViewModels
         public IEnumerable<BusinessLayer.Console> ListarConsoles()
         {
             IEnumerable<BusinessLayer.Console> lista = null;
-            using (var contexto = new LocadoraEntities())
+            try
             {
-                lista = contexto.Console.ToList();
+                using (var contexto = new LocadoraEntities())
+                {
+                    lista = contexto.Console.ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
             }
 
             return lista;
@@ -49,16 +56,23 @@ namespace Locadora.Models.ViewModels
         public IEnumerable<BusinessLayer.Console> ListarConsolesSelecionados(int IdJogo)
         {
             IList<BusinessLayer.Console> listaConsoles = new List<BusinessLayer.Console>();
-
-            using (var contexto = new LocadoraEntities())
+            try
             {
-                var listaPlataformas = contexto.PlataformasJogo.Where(p => p.IdJogo == IdJogo);
 
-                foreach (var plataforma in listaPlataformas)
+                using (var contexto = new LocadoraEntities())
                 {
-                    var console = contexto.Console.Where(c => c.IdConsole == plataforma.IdConsole).FirstOrDefault();
-                    listaConsoles.Add(console);
+                    var listaPlataformas = contexto.PlataformasJogo.Where(p => p.IdJogo == IdJogo);
+
+                    foreach (var plataforma in listaPlataformas)
+                    {
+                        var console = contexto.Console.Where(c => c.IdConsole == plataforma.IdConsole).FirstOrDefault();
+                        listaConsoles.Add(console);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                throw;
             }
 
 
@@ -69,13 +83,20 @@ namespace Locadora.Models.ViewModels
         {
             IList<PlataformasJogo> listaPlataformas = new List<PlataformasJogo>();
 
-            using (var contexto = new LocadoraEntities())
+            try
             {
-                foreach (var idConsole in idsConsole)
+                using (var contexto = new LocadoraEntities())
                 {
-                    PlataformasJogo plataforma = contexto.PlataformasJogo.Where(p => p.IdConsole == idConsole).FirstOrDefault();
-                    listaPlataformas.Add(plataforma);
+                    foreach (var idConsole in idsConsole)
+                    {
+                        PlataformasJogo plataforma = contexto.PlataformasJogo.Where(p => p.IdConsole == idConsole).FirstOrDefault();
+                        listaPlataformas.Add(plataforma);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                throw;
             }
 
             return listaPlataformas;

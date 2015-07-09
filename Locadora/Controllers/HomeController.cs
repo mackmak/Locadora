@@ -45,15 +45,10 @@ namespace Locadora.Controllers
                 var listaBytes = context.Filme.Select(c => c.Capa).FirstOrDefault();
 
                 byte[] bytes = listaBytes.ToArray();
-                try
-                {
-                    var ms = new MemoryStream(bytes);
-                    arquivo = new Bitmap(ms);//new FileStreamResult(new MemoryStream(ms), "image/jpg");
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+
+                var ms = new MemoryStream(bytes);
+                arquivo = new Bitmap(ms);
+
             }
             return arquivo;
         }
@@ -67,7 +62,6 @@ namespace Locadora.Controllers
 
 
             byte[] ms = listaBytes.ToList().ElementAt(0);
-            //var bw = new BinaryWriter(new MemoryStream(ms));
 
             Response.Buffer = true;
             Response.Clear();
@@ -76,63 +70,5 @@ namespace Locadora.Controllers
             Response.End();
 
         }
-        //private IQueryable<Image> ConverteStringEmImagem(IQueryable<string> listaImagens)
-        //{
-        //    IList<Image> lista = new List<Image>();
-        //    try
-        //    {
-        //        foreach (var item in listaImagens)
-        //        {
-        //            byte[] bytes = Convert.FromBase64String(item);
-
-        //            //MemoryStream ms = new MemoryStream(bytes); //Image.FromStream(new MemoryStream(item));
-
-        //            BinaryWriter bw = new BinaryWriter(new MemoryStream(bytes));
-
-        //            Response.BinaryWrite(bytes);
-        //            //ms.Write(bytes, 0, bytes.Length);
-        //            //Image imagem = Image.FromStream(ms, true);
-
-        //            //lista.Add(imagem);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new InvalidOperationException(ex.Message);
-
-        //    }
-
-        //    return lista.AsQueryable();
-        //}
-        //private IQueryable<string> ConverteByteEmByte64(IQueryable<byte[]> listaBytes)
-        //{
-        //    IList<string> lista = new List<string>();
-        //    foreach (var item in listaBytes)
-        //    {
-        //        lista.Add(Convert.ToBase64String(item, 0, item.Length));
-        //    }
-
-        //    return lista.AsQueryable();
-        //}
-        //private IList<MemoryStream> ConverteByteStream(IQueryable<byte[]> listaBytes)
-        //{
-        //    IList<MemoryStream> lista = new List<MemoryStream>();
-        //    foreach (var item in listaBytes)
-        //    {
-        //        lista.Add(new MemoryStream(item));
-        //    }
-
-        //    return lista;
-        //}
-        //private IQueryable<Image> ConverteStreamEmImagemLista(IQueryable<MemoryStream> listaBytes)
-        //{
-        //    IList<Image> lista = new List<Image>();
-        //    foreach (var item in listaBytes)
-        //    {
-        //        lista.Add(Image.FromStream(item));
-        //    }
-
-        //    return lista.AsQueryable();
-        //}
     }
 }

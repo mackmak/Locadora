@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿
 using Locadora.Models.BusinessLayer;
-using System.Web.Mvc;
-using System.Drawing;
-using System.Data.Entity;
 using Locadora.Utils;
-using System.IO;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 
 namespace Locadora.Models.ViewModels
 {
@@ -16,10 +13,17 @@ namespace Locadora.Models.ViewModels
         public Jogo RetornarJogoSelecionado(int idJogo)
         {
             Jogo jogo = null;
-            using (var contexto = new LocadoraEntities())
+            try
             {
-                jogo = contexto.Jogo.Where(j => j.IdJogo == idJogo).FirstOrDefault();
+                using (var contexto = new LocadoraEntities())
+                {
+                    jogo = contexto.Jogo.Where(j => j.IdJogo == idJogo).FirstOrDefault();
 
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
             }
 
             return jogo;
@@ -41,12 +45,19 @@ namespace Locadora.Models.ViewModels
 
         public void InserirJogo(JogoViewModel viewModel)
         {
-            var jogo = AtribuirJogo(viewModel);
-
-            using (var contexto = new LocadoraEntities())
+            try
             {
-                contexto.Jogo.Add(jogo);
-                contexto.SaveChanges();
+                var jogo = AtribuirJogo(viewModel);
+
+                using (var contexto = new LocadoraEntities())
+                {
+                    contexto.Jogo.Add(jogo);
+                    contexto.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
             }
         }
 
@@ -74,9 +85,8 @@ namespace Locadora.Models.ViewModels
                     contexto.SaveChanges();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                
                 throw;
             }
 
@@ -84,9 +94,17 @@ namespace Locadora.Models.ViewModels
         public void AlterarJogo(JogoViewModel viewModel)
         {
 
-            viewModel.Imagem = new ArquivoPostado();
-            var jogo = AtribuirJogo(viewModel);
-            AlterarJogo(jogo);
+            try
+            {
+                viewModel.Imagem = new ArquivoPostado();
+                var jogo = AtribuirJogo(viewModel);
+                AlterarJogo(jogo);
+                //viewModel.Imagem = null;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
 
         }
 
