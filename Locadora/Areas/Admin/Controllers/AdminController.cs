@@ -1,12 +1,7 @@
-﻿using Locadora.Models;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System;
 using System.Web;
 using System.Web.Mvc;
 using Locadora.Models.ViewModels;
-using System.Configuration;
 using Locadora.Controllers;
 
 namespace Locadora.Areas.Admin.Controllers
@@ -65,7 +60,7 @@ namespace Locadora.Areas.Admin.Controllers
 
         // POST: Admin/Admin/Alterar/5
         [HttpPost]
-        public ActionResult Alterar(JogoViewModel viewModel)
+        public ActionResult Alterar(JogoViewModel viewModel, HttpPostedFileBase arquivo)
         {
             try
             {

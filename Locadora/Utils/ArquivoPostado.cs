@@ -11,18 +11,9 @@ namespace Locadora.Utils
         private Stream stream;
         private string nomeArquivo;
 
-        public ArquivoPostado(Stream stream, string nomeArquivo)
-        {
-            this.stream = stream;
-            this.nomeArquivo = nomeArquivo;
-        }
         public ArquivoPostado()
         {
 
-        }
-        public ArquivoPostado(byte[] imagemOriginal)
-        {
-            stream = new MemoryStream(imagemOriginal);
         }
 
         public override int ContentLength { get { return (int)stream.Length; } }

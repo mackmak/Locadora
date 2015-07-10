@@ -5,30 +5,23 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Web;
 
 namespace Locadora.Models.ViewModels
 {
     public class JogoAccess
     {
-        
+
         private Jogo AtribuirJogo(JogoViewModel viewModel)
         {
             Jogo jogo = null;
 
-            try
-            {
-                jogo = new Repositorio().ObterJogo(viewModel.JogoProp.IdJogo);
-                jogo.Capa = ObterImagem(viewModel);
+            jogo = new Repositorio().ObterJogo(viewModel.JogoProp.IdJogo);
+            jogo.Capa = ObterImagem(viewModel);
 
-                var idConsolesSelecionados = viewModel.ConsolesPostados.IdConsoles;
-                //jogo.PlataformasJogo = CriarPlataformasJogo(idConsolesSelecionados, jogo.IdJogo);
-                viewModel.ListaConsolesSelecionados = ObterConsolesSelecionados(idConsolesSelecionados);
-            }
-            catch (Exception)
-            {
-                
-                throw;
-            }
+            var idConsolesSelecionados = viewModel.ConsolesPostados.IdConsoles;
+            viewModel.ListaConsolesSelecionados = ObterConsolesSelecionados(idConsolesSelecionados);
+
 
             return jogo;
         }
@@ -53,33 +46,20 @@ namespace Locadora.Models.ViewModels
 
         public void AlterarJogo(Jogo jogo)
         {
-            try
+            using (var contexto = new LocadoraEntities())
             {
-                using (var contexto = new LocadoraEntities())
-                {
-                    contexto.Entry(jogo).State = EntityState.Modified;
-                    contexto.SaveChanges();
-                }
-            }
-            catch (Exception)
-            {
-                throw;
+                contexto.Entry(jogo).State = EntityState.Modified;
+                contexto.SaveChanges();
             }
 
         }
         public void AlterarJogo(JogoViewModel viewModel)
         {
 
-            try
-            {
-                viewModel.Imagem = new ArquivoPostado();
-                var jogo = AtribuirJogo(viewModel);
-                AlterarJogo(jogo);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            viewModel.Imagem = new ArquivoPostado();
+            var jogo = AtribuirJogo(viewModel);
+            AlterarJogo(jogo);
+
 
         }
 
@@ -87,19 +67,13 @@ namespace Locadora.Models.ViewModels
         {
             byte[] imagem = null;
 
-            try
+            if (viewModel.Imagem.InputStream != null)
+                imagem = new Streaming().LerImagemPostada(viewModel.Imagem);
+            else
             {
-                if (viewModel.Imagem.InputStream != null)
-                    imagem = new Streaming().LerImagemPostada(viewModel.Imagem);
-                else
-                {
-                    imagem = System.Text.Encoding.ASCII.GetBytes(viewModel.NomeImagem);
-                }
+                imagem = System.Text.Encoding.ASCII.GetBytes(viewModel.NomeImagem);
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
 
             return imagem;
         }
@@ -107,22 +81,16 @@ namespace Locadora.Models.ViewModels
         private IEnumerable<BusinessLayer.Console> ObterConsolesSelecionados(IEnumerable<int> idsConsolesSelecionados)
         {
             IList<BusinessLayer.Console> consolesSelecionados = new List<BusinessLayer.Console>();
-            try
+
+            using (var contexto = new LocadoraEntities())
             {
-                using (var contexto = new LocadoraEntities())
+                foreach (var IdConsole in idsConsolesSelecionados)
                 {
-                    foreach (var IdConsole in idsConsolesSelecionados)
-                    {
-                        var consoleSelecionado = contexto.Console.Where(c => c.IdConsole == IdConsole).FirstOrDefault();
-                        consolesSelecionados.Add(consoleSelecionado);
-                    }
+                    var consoleSelecionado = contexto.Console.Where(c => c.IdConsole == IdConsole).FirstOrDefault();
+                    consolesSelecionados.Add(consoleSelecionado);
                 }
             }
-            catch (Exception)
-            {
-                
-                throw;
-            }
+
 
             return consolesSelecionados;
         }

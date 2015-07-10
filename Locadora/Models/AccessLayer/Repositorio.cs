@@ -14,40 +14,29 @@ namespace Locadora.Models.ViewModels
         public IEnumerable<SelectListItem> ListarGeneros()
         {
             IList<SelectListItem> listaRetorno = new List<SelectListItem>();
-            try
+
+            using (var contexto = new LocadoraEntities())
             {
-                using (var contexto = new LocadoraEntities())
+                var listaGeneros = contexto.Genero.Select(g => new SelectListItem { Text = g.NomeGenero, Value = g.IdGenero.ToString() });
+
+                foreach (var item in listaGeneros)
                 {
-                    var listaGeneros = contexto.Genero.Select(g => new SelectListItem { Text = g.NomeGenero, Value = g.IdGenero.ToString() });
-
-                    foreach (var item in listaGeneros)
-                    {
-                        listaRetorno.Add(item);
-                    }
-
-
+                    listaRetorno.Add(item);
                 }
+
+
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
             return listaRetorno;
         }
 
         public IEnumerable<BusinessLayer.Console> ListarConsoles()
         {
             IEnumerable<BusinessLayer.Console> lista = null;
-            try
+
+            using (var contexto = new LocadoraEntities())
             {
-                using (var contexto = new LocadoraEntities())
-                {
-                    lista = contexto.Console.ToList();
-                }
-            }
-            catch (Exception)
-            {
-                throw;
+                lista = contexto.Console.ToList();
             }
 
             return lista;
@@ -56,25 +45,18 @@ namespace Locadora.Models.ViewModels
         public IEnumerable<BusinessLayer.Console> ListarConsolesSelecionados(int IdJogo)
         {
             IList<BusinessLayer.Console> listaConsoles = new List<BusinessLayer.Console>();
-            try
+
+
+            using (var contexto = new LocadoraEntities())
             {
+                var listaPlataformas = contexto.PlataformasJogo.Where(p => p.IdJogo == IdJogo);
 
-                using (var contexto = new LocadoraEntities())
+                foreach (var plataforma in listaPlataformas)
                 {
-                    var listaPlataformas = contexto.PlataformasJogo.Where(p => p.IdJogo == IdJogo);
-
-                    foreach (var plataforma in listaPlataformas)
-                    {
-                        var console = contexto.Console.Where(c => c.IdConsole == plataforma.IdConsole).FirstOrDefault();
-                        listaConsoles.Add(console);
-                    }
+                    var console = contexto.Console.Where(c => c.IdConsole == plataforma.IdConsole).FirstOrDefault();
+                    listaConsoles.Add(console);
                 }
             }
-            catch (Exception)
-            {
-                throw;
-            }
-
 
             return listaConsoles;
         }
@@ -83,37 +65,24 @@ namespace Locadora.Models.ViewModels
         {
             IList<PlataformasJogo> listaPlataformas = new List<PlataformasJogo>();
 
-            try
+            using (var contexto = new LocadoraEntities())
             {
-                using (var contexto = new LocadoraEntities())
+                foreach (var idConsole in idsConsole)
                 {
-                    foreach (var idConsole in idsConsole)
-                    {
-                        PlataformasJogo plataforma = contexto.PlataformasJogo.Where(p => p.IdConsole == idConsole).FirstOrDefault();
-                        listaPlataformas.Add(plataforma);
-                    }
+                    PlataformasJogo plataforma = contexto.PlataformasJogo.Where(p => p.IdConsole == idConsole).FirstOrDefault();
+                    listaPlataformas.Add(plataforma);
                 }
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
 
             return listaPlataformas;
         }
         public Jogo ObterJogo(int idJogo)
         {
             Jogo jogo = null;
-            try
-            {
-                using (var contexto = new LocadoraEntities())
-                    jogo = contexto.Jogo.Find(idJogo);
 
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            using (var contexto = new LocadoraEntities())
+                jogo = contexto.Jogo.Find(idJogo);
 
             return jogo;
         }

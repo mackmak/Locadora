@@ -39,8 +39,7 @@
             @Html.LabelFor(model => model.Imagem, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 <img src="@Model.NomeImagem" height="300" width="300" id="imagemHtml" />
-                @Html.TextBoxFor(model => model.Imagem, htmlAttributes: new { type = "file" })
-                @*@Html.ValidationMessageFor(model => model.Imagem)*@
+                @Html.TextBoxFor(model => model.Imagem, new { type = "file" })
             </div>
         </div>
 

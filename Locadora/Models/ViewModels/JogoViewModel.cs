@@ -3,6 +3,7 @@ using Locadora.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Locadora.Models.ViewModels
@@ -19,9 +20,9 @@ namespace Locadora.Models.ViewModels
             { _jogo = value; }
         }
 
-        public ArquivoPostado Imagem { get; set; }
 
-        [Required(ErrorMessage = "A imagem é obrigatória")]
+        public HttpPostedFileBase Imagem { get; set; }
+
         public string NomeImagem { get; set; }
 
         public IEnumerable<SelectListItem> ListaGeneros
