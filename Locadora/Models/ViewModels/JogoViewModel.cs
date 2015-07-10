@@ -21,8 +21,6 @@ namespace Locadora.Models.ViewModels
 
         public ArquivoPostado Imagem { get; set; }
 
-        private string _nomeImagem;
-
         [Required(ErrorMessage = "A imagem é obrigatória")]
         public string NomeImagem { get; set; }
 
@@ -52,7 +50,7 @@ namespace Locadora.Models.ViewModels
         {
             try
             {
-                _jogo = new JogoAccess().RetornarJogoSelecionado(idJogo);
+                _jogo = new Repositorio().ObterJogo(idJogo);
                 string strCapa = Convert.ToBase64String(_jogo.Capa);
                 NomeImagem = string.Format("data:image/jpg;base64,{0}", strCapa);
                 ListaConsolesSelecionados = new Repositorio().ListarConsolesSelecionados(_jogo.IdJogo);

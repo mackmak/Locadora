@@ -10,35 +10,25 @@ namespace Locadora.Models.ViewModels
 {
     public class JogoAccess
     {
-        public Jogo RetornarJogoSelecionado(int idJogo)
-        {
-            Jogo jogo = null;
-            try
-            {
-                using (var contexto = new LocadoraEntities())
-                {
-                    jogo = contexto.Jogo.Where(j => j.IdJogo == idJogo).FirstOrDefault();
-
-                }
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
-
-            return jogo;
-        }
-
-
+        
         private Jogo AtribuirJogo(JogoViewModel viewModel)
         {
+            Jogo jogo = null;
 
-            var jogo = viewModel.JogoProp;
-            jogo.Capa = ObterImagem(viewModel);
+            try
+            {
+                jogo = new Repositorio().ObterJogo(viewModel.JogoProp.IdJogo);
+                jogo.Capa = ObterImagem(viewModel);
 
-            var idConsolesSelecionados = viewModel.ConsolesPostados.IdConsoles;
-            jogo.PlataformasJogo = CriarPlataformasJogo(idConsolesSelecionados);
-            viewModel.ListaConsolesSelecionados = ObterConsolesSelecionados(idConsolesSelecionados);
+                var idConsolesSelecionados = viewModel.ConsolesPostados.IdConsoles;
+                //jogo.PlataformasJogo = CriarPlataformasJogo(idConsolesSelecionados, jogo.IdJogo);
+                viewModel.ListaConsolesSelecionados = ObterConsolesSelecionados(idConsolesSelecionados);
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
 
             return jogo;
         }
@@ -55,25 +45,11 @@ namespace Locadora.Models.ViewModels
                     contexto.SaveChanges();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
         }
-
-        private ICollection<PlataformasJogo> CriarPlataformasJogo(IEnumerable<int> idsConsole)
-        {
-            var listaPlataformas = new List<PlataformasJogo>();
-
-            foreach (var idConsole in idsConsole)
-            {
-                var plataforma = new PlataformasJogo() { IdConsole = idConsole };
-                listaPlataformas.Add(plataforma);
-            }
-
-            return listaPlataformas;
-        }
-
 
         public void AlterarJogo(Jogo jogo)
         {
@@ -85,7 +61,7 @@ namespace Locadora.Models.ViewModels
                     contexto.SaveChanges();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -99,9 +75,8 @@ namespace Locadora.Models.ViewModels
                 viewModel.Imagem = new ArquivoPostado();
                 var jogo = AtribuirJogo(viewModel);
                 AlterarJogo(jogo);
-                //viewModel.Imagem = null;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -132,13 +107,21 @@ namespace Locadora.Models.ViewModels
         private IEnumerable<BusinessLayer.Console> ObterConsolesSelecionados(IEnumerable<int> idsConsolesSelecionados)
         {
             IList<BusinessLayer.Console> consolesSelecionados = new List<BusinessLayer.Console>();
-            using (var contexto = new LocadoraEntities())
+            try
             {
-                foreach (var IdConsole in idsConsolesSelecionados)
+                using (var contexto = new LocadoraEntities())
                 {
-                    var consoleSelecionado = contexto.Console.Where(c=> c.IdConsole==IdConsole).FirstOrDefault();
-                    consolesSelecionados.Add(consoleSelecionado);
+                    foreach (var IdConsole in idsConsolesSelecionados)
+                    {
+                        var consoleSelecionado = contexto.Console.Where(c => c.IdConsole == IdConsole).FirstOrDefault();
+                        consolesSelecionados.Add(consoleSelecionado);
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                
+                throw;
             }
 
             return consolesSelecionados;

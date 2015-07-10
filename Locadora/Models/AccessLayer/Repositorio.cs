@@ -28,7 +28,7 @@ namespace Locadora.Models.ViewModels
 
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -45,7 +45,7 @@ namespace Locadora.Models.ViewModels
                     lista = contexto.Console.ToList();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -70,7 +70,7 @@ namespace Locadora.Models.ViewModels
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
@@ -94,16 +94,29 @@ namespace Locadora.Models.ViewModels
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw;
             }
 
             return listaPlataformas;
         }
+        public Jogo ObterJogo(int idJogo)
+        {
+            Jogo jogo = null;
+            try
+            {
+                using (var contexto = new LocadoraEntities())
+                    jogo = contexto.Jogo.Find(idJogo);
 
-        
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
+            return jogo;
+        }
 
     }
 }
