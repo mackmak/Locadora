@@ -20,6 +20,7 @@ namespace Locadora.Models.ViewModels
             { _jogo = value; }
         }
 
+        public string Message { get; set; }
 
         public HttpPostedFileBase Imagem { get; set; }
 
@@ -49,18 +50,17 @@ namespace Locadora.Models.ViewModels
 
         public JogoViewModel(int idJogo)
         {
-            try
-            {
-                _jogo = new Repositorio().ObterJogo(idJogo);
-                string strCapa = Convert.ToBase64String(_jogo.Capa);
-                NomeImagem = string.Format("data:image/jpg;base64,{0}", strCapa);
-                ListaConsolesSelecionados = new Repositorio().ListarConsolesSelecionados(_jogo.IdJogo);
+            _jogo = new Repositorio().ObterJogo(idJogo);
+            string strCapa = Convert.ToBase64String(_jogo.Capa);
+            NomeImagem = string.Format("data:image/jpg;base64,{0}", strCapa);
+            ListaConsolesSelecionados = new Repositorio().ListarConsolesSelecionados(_jogo.IdJogo);
 
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+        }
+
+        public JogoViewModel(string message)
+            : this()
+        {
+            this.Message = message;
         }
 
     }

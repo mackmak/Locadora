@@ -14,9 +14,8 @@ namespace Locadora.Utils
         {
             byte[] arrayBytesSaida = null;
             using (BinaryReader leitor = new BinaryReader(arquivo.InputStream))
-            {
                 arrayBytesSaida = leitor.ReadBytes(arquivo.ContentLength);
-            }
+            
 
             return arrayBytesSaida;
         }

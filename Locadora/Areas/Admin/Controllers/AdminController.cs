@@ -37,7 +37,7 @@ namespace Locadora.Areas.Admin.Controllers
                 if (ModelState.IsValid)
                     new JogoAccess().InserirJogo(viewModel);
 
-                return View(viewModel);
+                return View(new JogoViewModel("Jogo cadastrado com Sucesso!"));
             }
             catch (Exception e)
             {
@@ -60,7 +60,7 @@ namespace Locadora.Areas.Admin.Controllers
 
         // POST: Admin/Admin/Alterar/5
         [HttpPost]
-        public ActionResult Alterar(JogoViewModel viewModel, HttpPostedFileBase arquivo)
+        public ActionResult Alterar(JogoViewModel viewModel)
         {
             try
             {
@@ -68,6 +68,7 @@ namespace Locadora.Areas.Admin.Controllers
                 if (ModelState.IsValid)
                     new JogoAccess().AlterarJogo(viewModel);
 
+                viewModel.Message = "Jogo Alterado Com Sucesso!";
                 return View(viewModel);
             }
             catch(Exception e)

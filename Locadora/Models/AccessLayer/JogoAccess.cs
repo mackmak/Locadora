@@ -11,12 +11,21 @@ namespace Locadora.Models.ViewModels
 {
     public class JogoAccess
     {
+        private Jogo PreencherJogo(JogoViewModel viewModel)
+        {
+            Jogo jogo = null;
+            if (viewModel.JogoProp.IdJogo > 0)
+                jogo = new Repositorio().ObterJogo(viewModel.JogoProp.IdJogo);
+            else
+                jogo = viewModel.JogoProp;
+
+            return jogo;
+
+        }
 
         private Jogo AtribuirJogo(JogoViewModel viewModel)
         {
-            Jogo jogo = null;
-
-            jogo = new Repositorio().ObterJogo(viewModel.JogoProp.IdJogo);
+            var jogo = PreencherJogo(viewModel);
             jogo.Capa = ObterImagem(viewModel);
 
             var idConsolesSelecionados = viewModel.ConsolesPostados.IdConsoles;
@@ -28,20 +37,14 @@ namespace Locadora.Models.ViewModels
 
         public void InserirJogo(JogoViewModel viewModel)
         {
-            try
-            {
-                var jogo = AtribuirJogo(viewModel);
+            var jogo = AtribuirJogo(viewModel);
 
-                using (var contexto = new LocadoraEntities())
-                {
-                    contexto.Jogo.Add(jogo);
-                    contexto.SaveChanges();
-                }
-            }
-            catch (Exception)
+            using (var contexto = new LocadoraEntities())
             {
-                throw;
+                contexto.Jogo.Add(jogo);
+                contexto.SaveChanges();
             }
+
         }
 
         public void AlterarJogo(Jogo jogo)
@@ -55,8 +58,9 @@ namespace Locadora.Models.ViewModels
         }
         public void AlterarJogo(JogoViewModel viewModel)
         {
+            if(viewModel.Imagem == null)
+                viewModel.Imagem = new ArquivoPostado();
 
-            viewModel.Imagem = new ArquivoPostado();
             var jogo = AtribuirJogo(viewModel);
             AlterarJogo(jogo);
 
@@ -70,9 +74,7 @@ namespace Locadora.Models.ViewModels
             if (viewModel.Imagem.InputStream != null)
                 imagem = new Streaming().LerImagemPostada(viewModel.Imagem);
             else
-            {
                 imagem = System.Text.Encoding.ASCII.GetBytes(viewModel.NomeImagem);
-            }
 
 
             return imagem;
@@ -80,7 +82,7 @@ namespace Locadora.Models.ViewModels
 
         private IEnumerable<BusinessLayer.Console> ObterConsolesSelecionados(IEnumerable<int> idsConsolesSelecionados)
         {
-            IList<BusinessLayer.Console> consolesSelecionados = new List<BusinessLayer.Console>();
+            var consolesSelecionados = new List<BusinessLayer.Console>();
 
             using (var contexto = new LocadoraEntities())
             {

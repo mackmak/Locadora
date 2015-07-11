@@ -9,11 +9,9 @@ namespace Locadora.Models.ViewModels
 {
     public class Repositorio
     {
-
-
         public IEnumerable<SelectListItem> ListarGeneros()
         {
-            IList<SelectListItem> listaRetorno = new List<SelectListItem>();
+            var listaRetorno = new List<SelectListItem>();
 
             using (var contexto = new LocadoraEntities())
             {
@@ -32,19 +30,14 @@ namespace Locadora.Models.ViewModels
 
         public IEnumerable<BusinessLayer.Console> ListarConsoles()
         {
-            IEnumerable<BusinessLayer.Console> lista = null;
-
             using (var contexto = new LocadoraEntities())
-            {
-                lista = contexto.Console.ToList();
-            }
+                return contexto.Console.ToList();
 
-            return lista;
         }
 
         public IEnumerable<BusinessLayer.Console> ListarConsolesSelecionados(int IdJogo)
         {
-            IList<BusinessLayer.Console> listaConsoles = new List<BusinessLayer.Console>();
+            var listaConsoles = new List<BusinessLayer.Console>();
 
 
             using (var contexto = new LocadoraEntities())
@@ -63,7 +56,7 @@ namespace Locadora.Models.ViewModels
 
         public IList<PlataformasJogo> RecuperarPlataformas(IEnumerable<int> idsConsole)
         {
-            IList<PlataformasJogo> listaPlataformas = new List<PlataformasJogo>();
+            var listaPlataformas = new List<PlataformasJogo>();
 
             using (var contexto = new LocadoraEntities())
             {
@@ -77,14 +70,11 @@ namespace Locadora.Models.ViewModels
 
             return listaPlataformas;
         }
+
         public Jogo ObterJogo(int idJogo)
         {
-            Jogo jogo = null;
-
             using (var contexto = new LocadoraEntities())
-                jogo = contexto.Jogo.Find(idJogo);
-
-            return jogo;
+                return contexto.Jogo.Find(idJogo);
         }
 
     }
