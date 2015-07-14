@@ -19,6 +19,5 @@ namespace Locadora.Models.BusinessLayer
         public int IdConsole { get; set; }
     
         public virtual Console Console { get; set; }
-        public virtual Jogo Jogo { get; set; }
     }
 }

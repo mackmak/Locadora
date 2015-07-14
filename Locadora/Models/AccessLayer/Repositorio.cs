@@ -4,8 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Locadora.Models.BusinessLayer;
+using Locadora.Utils;
+using Locadora.Models.ViewModels;
+using System.Data.Entity;
 
-namespace Locadora.Models.ViewModels
+namespace Locadora.Models.AccessLayer
 {
     public class Repositorio
     {
@@ -26,6 +29,11 @@ namespace Locadora.Models.ViewModels
             }
 
             return listaRetorno;
+        }
+
+        public BusinessLayer.Console ObterConsole(int idConsole, LocadoraEntities contexto)
+        {
+                return contexto.Console.Find(idConsole);
         }
 
         public IEnumerable<BusinessLayer.Console> ListarConsoles()
@@ -74,7 +82,60 @@ namespace Locadora.Models.ViewModels
         public Jogo ObterJogo(int idJogo)
         {
             using (var contexto = new LocadoraEntities())
-                return contexto.Jogo.Find(idJogo);
+                return contexto.Jogo.Include("PlataformasJogo").Where(j => j.IdJogo == idJogo).FirstOrDefault();
+        }
+        public Jogo ReatribuirJogo(JogoViewModel viewModel)
+        {
+            Jogo jogo = null;
+            using (var contexto = new LocadoraEntities())
+            {
+                jogo = new Repositorio().ObterJogo(viewModel.JogoProp.IdJogo);
+                AlterarValoresJogo(jogo, viewModel);
+            }
+
+            return jogo;
+        }
+
+        private void AlterarValoresJogo(Jogo jogo, JogoViewModel viewModel)
+        {
+            jogo.Titulo = viewModel.JogoProp.Titulo;
+            jogo.Ano = viewModel.JogoProp.Ano;
+            jogo.Genero = viewModel.JogoProp.Genero;
+            jogo.IdGenero = viewModel.JogoProp.IdGenero;
+            //jogo.PlataformasJogo = ObterPlataformasJogo(viewModel.JogoProp.IdJogo, viewModel.ConsolesPostados.IdConsoles);
+            jogo.Capa = ObterImagem(viewModel);
+        }
+
+        private ICollection<PlataformasJogo> ObterPlataformasJogo(int idJogo, IEnumerable<int> idConsoles)
+        {
+            ICollection<PlataformasJogo> plataformasJogo = null;
+            using (var contexto = new LocadoraEntities())
+                plataformasJogo = contexto.PlataformasJogo.Where(pj => pj.IdJogo == idJogo).ToList();
+
+            //Caso a quantidade seja igual, apenas alterar os ids
+            if (plataformasJogo.Count() == idConsoles.Count())
+            {
+                for (int i = 0; i < idConsoles.Count(); i++)
+                {
+                    plataformasJogo.ElementAt(i).IdConsole = idConsoles.ElementAt(i);
+                }
+            }
+            //Caso contrário, deverá excluuir os consoles e criar novos...
+            return plataformasJogo;
+
+        }
+
+        private byte[] ObterImagem(JogoViewModel viewModel)
+        {
+            byte[] imagem = null;
+
+            if (viewModel.Imagem.InputStream != null)
+                imagem = new Streaming().LerImagemPostada(viewModel.Imagem);
+            else
+                imagem = System.Text.Encoding.ASCII.GetBytes(viewModel.NomeImagem);
+
+
+            return imagem;
         }
 
     }

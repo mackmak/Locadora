@@ -11,7 +11,6 @@ namespace Locadora.Models.BusinessLayer
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     
     public partial class Filme
     {
@@ -21,9 +20,7 @@ namespace Locadora.Models.BusinessLayer
         }
     
         public int IdFilme { get; set; }
-        [Required(ErrorMessage="O título do filme é obrigatório")]
         public string Titulo { get; set; }
-        [Required(ErrorMessage="O Ano de lançamento é obrigatório")]
         public string Ano { get; set; }
         public byte[] Capa { get; set; }
         public int IdGenero { get; set; }

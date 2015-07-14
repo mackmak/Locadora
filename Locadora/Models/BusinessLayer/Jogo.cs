@@ -11,7 +11,6 @@ namespace Locadora.Models.BusinessLayer
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     
     public partial class Jogo
     {
@@ -22,11 +21,7 @@ namespace Locadora.Models.BusinessLayer
         }
     
         public int IdJogo { get; set; }
-
-        [Required(ErrorMessage="O título do jogo é obrigatório")]
         public string Titulo { get; set; }
-
-        [Required(ErrorMessage="O ano de lançamento é obrigatório")]
         public string Ano { get; set; }
         public byte[] Capa { get; set; }
         public int IdGenero { get; set; }

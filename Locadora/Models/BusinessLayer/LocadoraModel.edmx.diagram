@@ -6,7 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="2267bf12d7314604bf7d5e0273565849" Name="LocadoraDiagram">
         <EntityTypeShape EntityType="LocadoraModel.Cliente" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="LocadoraModel.Console" Width="1.5" PointX="3" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="LocadoraModel.Console" Width="1.5" PointX="7.5" PointY="6.5" IsExpanded="true" />
         <EntityTypeShape EntityType="LocadoraModel.Copia" Width="1.5" PointX="5.25" PointY="3.5" IsExpanded="true" />
         <EntityTypeShape EntityType="LocadoraModel.Emprestimo" Width="1.5" PointX="7.5" PointY="3.625" IsExpanded="true" />
         <EntityTypeShape EntityType="LocadoraModel.Filme" Width="1.5" PointX="3" PointY="1.875" IsExpanded="true" />

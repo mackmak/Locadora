@@ -3,6 +3,7 @@ using System.Web;
 using System.Web.Mvc;
 using Locadora.Models.ViewModels;
 using Locadora.Controllers;
+using Locadora.Models.AcessLayer;
 
 namespace Locadora.Areas.Admin.Controllers
 {
@@ -35,7 +36,7 @@ namespace Locadora.Areas.Admin.Controllers
             try
             {
                 if (ModelState.IsValid)
-                    new JogoAccess().InserirJogo(viewModel);
+                    new JogoAccess().InserirJogo(viewModel.JogoProp);
 
                 return View(new JogoViewModel("Jogo cadastrado com Sucesso!"));
             }

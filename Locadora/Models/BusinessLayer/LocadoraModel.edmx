@@ -324,7 +324,6 @@
           <Property Name="IdJogo" Type="Int32" Nullable="false" />
           <Property Name="IdConsole" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Console" Relationship="Self.FK_PlataformasJogo_Console" FromRole="PlataformasJogo" ToRole="Console" />
-          <NavigationProperty Name="Jogo" Relationship="Self.FK_PlataformasJogo_Jogo" FromRole="PlataformasJogo" ToRole="Jogo" />
         </EntityType>
         <Association Name="FK_Emprestimo_Cliente">
           <End Role="Cliente" Type="Self.Cliente" Multiplicity="1" />

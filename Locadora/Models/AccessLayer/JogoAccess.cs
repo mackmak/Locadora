@@ -1,5 +1,7 @@
 ﻿
+using Locadora.Models.AccessLayer;
 using Locadora.Models.BusinessLayer;
+using Locadora.Models.ViewModels;
 using Locadora.Utils;
 using System;
 using System.Collections.Generic;
@@ -7,38 +9,25 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
-namespace Locadora.Models.ViewModels
+namespace Locadora.Models.AcessLayer
 {
     public class JogoAccess
     {
-        private Jogo PreencherJogo(JogoViewModel viewModel)
-        {
-            Jogo jogo = null;
-            if (viewModel.JogoProp.IdJogo > 0)
-                jogo = new Repositorio().ObterJogo(viewModel.JogoProp.IdJogo);
-            else
-                jogo = viewModel.JogoProp;
-
-            return jogo;
-
-        }
 
         private Jogo AtribuirJogo(JogoViewModel viewModel)
         {
-            var jogo = PreencherJogo(viewModel);
-            jogo.Capa = ObterImagem(viewModel);
+            var jogo = new Repositorio().ReatribuirJogo(viewModel);
 
-            var idConsolesSelecionados = viewModel.ConsolesPostados.IdConsoles;
-            viewModel.ListaConsolesSelecionados = ObterConsolesSelecionados(idConsolesSelecionados);
+
+            viewModel.ListaConsolesSelecionados = ObterConsolesSelecionados(viewModel.ConsolesPostados.IdConsoles);
 
 
             return jogo;
         }
 
-        public void InserirJogo(JogoViewModel viewModel)
-        {
-            var jogo = AtribuirJogo(viewModel);
 
+        public void InserirJogo(Jogo jogo)
+        {
             using (var contexto = new LocadoraEntities())
             {
                 contexto.Jogo.Add(jogo);
@@ -47,38 +36,35 @@ namespace Locadora.Models.ViewModels
 
         }
 
-        public void AlterarJogo(Jogo jogo)
+        public void PersistirAlteracao(JogoViewModel viewModel)
         {
+            var jogo = AtribuirJogo(viewModel);
+
             using (var contexto = new LocadoraEntities())
             {
-                contexto.Entry(jogo).State = EntityState.Modified;
+                //Anexa o jogo para que as alterações sejam rastreadas
+                contexto.Jogo.Attach(jogo);
+
+                var entry = contexto.Entry(jogo);
+                entry.Collection(j => j.PlataformasJogo).Load();
+
+                //Aqui, o contexto fica ciente das alterações
+                jogo.PlataformasJogo = ObterPlataformasJogo(jogo.IdJogo, viewModel.ConsolesPostados.IdConsoles, contexto);
+
+                entry.State = EntityState.Modified;
                 contexto.SaveChanges();
             }
 
         }
         public void AlterarJogo(JogoViewModel viewModel)
         {
-            if(viewModel.Imagem == null)
+            if (viewModel.Imagem == null)
                 viewModel.Imagem = new ArquivoPostado();
 
-            var jogo = AtribuirJogo(viewModel);
-            AlterarJogo(jogo);
-
+            PersistirAlteracao(viewModel);
 
         }
 
-        private byte[] ObterImagem(JogoViewModel viewModel)
-        {
-            byte[] imagem = null;
-
-            if (viewModel.Imagem.InputStream != null)
-                imagem = new Streaming().LerImagemPostada(viewModel.Imagem);
-            else
-                imagem = System.Text.Encoding.ASCII.GetBytes(viewModel.NomeImagem);
-
-
-            return imagem;
-        }
 
         private IEnumerable<BusinessLayer.Console> ObterConsolesSelecionados(IEnumerable<int> idsConsolesSelecionados)
         {
@@ -93,8 +79,25 @@ namespace Locadora.Models.ViewModels
                 }
             }
 
-
             return consolesSelecionados;
+        }
+
+        private ICollection<PlataformasJogo> ObterPlataformasJogo(int idJogo, IEnumerable<int> idConsoles, LocadoraEntities contexto)
+        {
+            ICollection<PlataformasJogo> plataformasJogo = null;
+            plataformasJogo = contexto.PlataformasJogo.Where(pj => pj.IdJogo == idJogo).ToList();
+
+            //Caso a quantidade seja igual, apenas alterar os ids
+            if (plataformasJogo.Count() == idConsoles.Count())
+            {
+                for (int i = 0; i < idConsoles.Count(); i++)
+                {
+                    plataformasJogo.ElementAt(i).IdConsole = idConsoles.ElementAt(i);
+                }
+            }
+            //Caso contrário, deverá excluuir os consoles e criar novos...
+            return plataformasJogo;
+
         }
 
     }

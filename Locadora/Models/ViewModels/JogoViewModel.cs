@@ -1,4 +1,5 @@
-﻿using Locadora.Models.BusinessLayer;
+﻿using Locadora.Models.AccessLayer;
+using Locadora.Models.BusinessLayer;
 using Locadora.Utils;
 using System;
 using System.Collections.Generic;
