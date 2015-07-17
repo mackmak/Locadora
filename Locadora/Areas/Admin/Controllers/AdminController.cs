@@ -7,7 +7,7 @@ using Locadora.Models.AcessLayer;
 
 namespace Locadora.Areas.Admin.Controllers
 {
-    [HandleError(View="~/Shared/Error")]
+    //[HandleError(View="~/Shared/Error")]
     public class AdminController : BaseController
     {
         // GET: Admin/Admin
@@ -38,7 +38,7 @@ namespace Locadora.Areas.Admin.Controllers
                 if (ModelState.IsValid)
                     new JogoAccess().InserirJogo(viewModel.JogoProp);
 
-                return View(new JogoViewModel("Jogo cadastrado com Sucesso!"));
+                return Sucesso();
             }
             catch (Exception e)
             {
@@ -69,8 +69,7 @@ namespace Locadora.Areas.Admin.Controllers
                 if (ModelState.IsValid)
                     new JogoAccess().AlterarJogo(viewModel);
 
-                viewModel.Message = "Jogo Alterado Com Sucesso!";
-                return View(viewModel);
+                return Sucesso();
             }
             catch(Exception e)
             {
@@ -79,23 +78,31 @@ namespace Locadora.Areas.Admin.Controllers
         }
 
         // GET: Admin/Admin/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Excluir(int id)
         {
-            return View();
+            try
+            {
+                return View(new JogoViewModel(id));
+            }
+            catch (Exception e)
+            {
+                return Erro(e);
+            }
         }
 
         // POST: Admin/Admin/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Excluir(JogoViewModel viewModel)
         {
             try
             {
-                // TODO: Add delete logic here
-                return RedirectToAction("Index");
+                new JogoAccess().ExcluirJogo(viewModel);
+
+                return Sucesso();
             }
-            catch
+            catch(Exception e)
             {
-                return View();
+                return Erro(e);
             }
         }
 

@@ -11,10 +11,16 @@ namespace Locadora.Controllers
     {
 
         private string _caminhoErro = ConfigurationManager.AppSettings["CaminhoErro"];
+        private string _caminhoSucesso = ConfigurationManager.AppSettings["CaminhoSucesso"];
 
         public string CaminhoErro
         {
             get { return _caminhoErro; }
+        }
+
+        public string CaminhoSucesso
+        {
+            get { return _caminhoSucesso; }
         }
 
         private string _controller;
@@ -48,6 +54,11 @@ namespace Locadora.Controllers
         protected ActionResult Erro(Exception e)
         {
             return View(CaminhoErro, new HandleErrorInfo(e, this.NomeController, this.NomeAction));
+        }
+
+        protected ActionResult Sucesso()
+        {
+            return View(CaminhoSucesso);
         }
     }
 }

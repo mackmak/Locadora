@@ -6,6 +6,7 @@ using Locadora.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Web;
 
@@ -13,16 +14,44 @@ namespace Locadora.Models.AcessLayer
 {
     public class JogoAccess
     {
+        public Jogo ObterJogo(int idJogo)
+        {
+            Jogo jogo = null;
+            using (var contexto = new LocadoraEntities())
+            {
+                jogo = contexto.Midia.Include("PlataformasJogo").Include("Genero").Where(j => j.IdMidia == idJogo).Select(j => j as Jogo).FirstOrDefault();
+                
+            }
+
+            return jogo;
+        }
 
         private Jogo AtribuirJogo(JogoViewModel viewModel)
         {
-            var jogo = new Repositorio().ReatribuirJogo(viewModel);
-
-
-            viewModel.ListaConsolesSelecionados = ObterConsolesSelecionados(viewModel.ConsolesPostados.IdConsoles);
-
+            var jogo = ReatribuirJogo(viewModel);
 
             return jogo;
+        }
+
+        public Jogo ReatribuirJogo(JogoViewModel viewModel)
+        {
+            Jogo jogo = null;
+            using (var contexto = new LocadoraEntities())
+            {
+                jogo = ObterJogo(viewModel.JogoProp.IdMidia);
+                AlterarValoresJogo(jogo, viewModel);
+            }
+
+            return jogo;
+        }
+
+        private void AlterarValoresJogo(Jogo jogo, JogoViewModel viewModel)
+        {
+            jogo.Titulo = viewModel.JogoProp.Titulo;
+            jogo.Ano = viewModel.JogoProp.Ano;
+            jogo.Genero = viewModel.JogoProp.Genero;
+            jogo.IdGenero = viewModel.JogoProp.IdGenero;
+            jogo.Capa = ObterImagem(viewModel);
         }
 
 
@@ -30,30 +59,48 @@ namespace Locadora.Models.AcessLayer
         {
             using (var contexto = new LocadoraEntities())
             {
-                contexto.Jogo.Add(jogo);
+                contexto.Midia.Add(jogo);
                 contexto.SaveChanges();
             }
 
         }
 
-        public void PersistirAlteracao(JogoViewModel viewModel)
+        private DbEntityEntry AtribuiEntryEF(LocadoraEntities contexto, JogoViewModel viewModel)
         {
             var jogo = AtribuirJogo(viewModel);
 
+            //Anexa o jogo para que as alterações sejam rastreadas
+            contexto.Midia.Attach(jogo);
+
+            var entry = contexto.Entry(jogo);
+            entry.Collection(j => j.PlataformasJogo).Load();
+
+            //Aqui, o contexto fica ciente das alterações
+            jogo.PlataformasJogo = AlterarPlataformasJogo(jogo.IdMidia, viewModel.ConsolesPostados.IdConsoles, contexto);
+
+            return entry;
+        }
+
+        public void PersistirJogo(JogoViewModel viewModel, EntityState estadoEntidade)
+        {
             using (var contexto = new LocadoraEntities())
             {
-                //Anexa o jogo para que as alterações sejam rastreadas
-                contexto.Jogo.Attach(jogo);
+                var entry = AtribuiEntryEF(contexto, viewModel);
 
-                var entry = contexto.Entry(jogo);
-                entry.Collection(j => j.PlataformasJogo).Load();
-
-                //Aqui, o contexto fica ciente das alterações
-                jogo.PlataformasJogo = ObterPlataformasJogo(jogo.IdJogo, viewModel.ConsolesPostados.IdConsoles, contexto);
-
-                entry.State = EntityState.Modified;
+                entry.State = estadoEntidade;
                 contexto.SaveChanges();
             }
+        }
+
+        public void PersistirAlteracao(JogoViewModel viewModel)
+        {
+            PersistirJogo(viewModel, EntityState.Modified);
+            /*using (var contexto = new LocadoraEntities())
+            {
+                var entry = AtribuiEntryEF(contexto, viewModel);
+                entry.State = EntityState.Modified;
+                contexto.SaveChanges();
+            }*/
 
         }
         public void AlterarJogo(JogoViewModel viewModel)
@@ -82,11 +129,8 @@ namespace Locadora.Models.AcessLayer
             return consolesSelecionados;
         }
 
-        private ICollection<PlataformasJogo> ObterPlataformasJogo(int idJogo, IEnumerable<int> idConsoles, LocadoraEntities contexto)
+        private void AtribuiAlteracoesPlataformasJogo(ICollection<PlataformasJogo> plataformasJogo, IEnumerable<int> idConsoles)
         {
-            ICollection<PlataformasJogo> plataformasJogo = null;
-            plataformasJogo = contexto.PlataformasJogo.Where(pj => pj.IdJogo == idJogo).ToList();
-
             //Caso a quantidade seja igual, apenas alterar os ids
             if (plataformasJogo.Count() == idConsoles.Count())
             {
@@ -96,8 +140,33 @@ namespace Locadora.Models.AcessLayer
                 }
             }
             //Caso contrário, deverá excluuir os consoles e criar novos...
-            return plataformasJogo;
+        }
 
+        private ICollection<PlataformasJogo> AlterarPlataformasJogo(int idJogo, IEnumerable<int> idConsoles, LocadoraEntities contexto)
+        {
+            var plataformasJogo = contexto.PlataformasJogo.Where(pj => pj.IdJogo == idJogo).ToList();
+            AtribuiAlteracoesPlataformasJogo(plataformasJogo, idConsoles);
+
+            return plataformasJogo;
+        }
+
+        private byte[] ObterImagem(JogoViewModel viewModel)
+        {
+            byte[] imagem = null;
+
+            if (viewModel.Imagem.InputStream != null)
+                imagem = new Streaming().LerImagemPostada(viewModel.Imagem);
+            else
+                imagem = System.Text.Encoding.ASCII.GetBytes(viewModel.NomeImagem);
+
+
+            return imagem;
+        }
+
+
+        public void ExcluirJogo(JogoViewModel viewModel)
+        {
+            PersistirJogo(viewModel, EntityState.Deleted);
         }
 
     }

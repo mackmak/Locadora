@@ -29,9 +29,8 @@ namespace Locadora.Models.BusinessLayer
         public virtual DbSet<Console> Console { get; set; }
         public virtual DbSet<Copia> Copia { get; set; }
         public virtual DbSet<Emprestimo> Emprestimo { get; set; }
-        public virtual DbSet<Filme> Filme { get; set; }
         public virtual DbSet<Genero> Genero { get; set; }
-        public virtual DbSet<Jogo> Jogo { get; set; }
         public virtual DbSet<PlataformasJogo> PlataformasJogo { get; set; }
+        public virtual DbSet<Midia> Midia { get; set; }
     }
 }

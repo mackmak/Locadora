@@ -62,81 +62,8 @@ namespace Locadora.Models.AccessLayer
             return listaConsoles;
         }
 
-        public IList<PlataformasJogo> RecuperarPlataformas(IEnumerable<int> idsConsole)
-        {
-            var listaPlataformas = new List<PlataformasJogo>();
-
-            using (var contexto = new LocadoraEntities())
-            {
-                foreach (var idConsole in idsConsole)
-                {
-                    PlataformasJogo plataforma = contexto.PlataformasJogo.Where(p => p.IdConsole == idConsole).FirstOrDefault();
-                    listaPlataformas.Add(plataforma);
-                }
-            }
 
 
-            return listaPlataformas;
-        }
-
-        public Jogo ObterJogo(int idJogo)
-        {
-            using (var contexto = new LocadoraEntities())
-                return contexto.Jogo.Include("PlataformasJogo").Where(j => j.IdJogo == idJogo).FirstOrDefault();
-        }
-        public Jogo ReatribuirJogo(JogoViewModel viewModel)
-        {
-            Jogo jogo = null;
-            using (var contexto = new LocadoraEntities())
-            {
-                jogo = new Repositorio().ObterJogo(viewModel.JogoProp.IdJogo);
-                AlterarValoresJogo(jogo, viewModel);
-            }
-
-            return jogo;
-        }
-
-        private void AlterarValoresJogo(Jogo jogo, JogoViewModel viewModel)
-        {
-            jogo.Titulo = viewModel.JogoProp.Titulo;
-            jogo.Ano = viewModel.JogoProp.Ano;
-            jogo.Genero = viewModel.JogoProp.Genero;
-            jogo.IdGenero = viewModel.JogoProp.IdGenero;
-            //jogo.PlataformasJogo = ObterPlataformasJogo(viewModel.JogoProp.IdJogo, viewModel.ConsolesPostados.IdConsoles);
-            jogo.Capa = ObterImagem(viewModel);
-        }
-
-        private ICollection<PlataformasJogo> ObterPlataformasJogo(int idJogo, IEnumerable<int> idConsoles)
-        {
-            ICollection<PlataformasJogo> plataformasJogo = null;
-            using (var contexto = new LocadoraEntities())
-                plataformasJogo = contexto.PlataformasJogo.Where(pj => pj.IdJogo == idJogo).ToList();
-
-            //Caso a quantidade seja igual, apenas alterar os ids
-            if (plataformasJogo.Count() == idConsoles.Count())
-            {
-                for (int i = 0; i < idConsoles.Count(); i++)
-                {
-                    plataformasJogo.ElementAt(i).IdConsole = idConsoles.ElementAt(i);
-                }
-            }
-            //Caso contrário, deverá excluuir os consoles e criar novos...
-            return plataformasJogo;
-
-        }
-
-        private byte[] ObterImagem(JogoViewModel viewModel)
-        {
-            byte[] imagem = null;
-
-            if (viewModel.Imagem.InputStream != null)
-                imagem = new Streaming().LerImagemPostada(viewModel.Imagem);
-            else
-                imagem = System.Text.Encoding.ASCII.GetBytes(viewModel.NomeImagem);
-
-
-            return imagem;
-        }
 
     }
 }

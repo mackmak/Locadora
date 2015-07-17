@@ -12,7 +12,7 @@ namespace Locadora.Models.BusinessLayer
     using System;
     using System.Collections.Generic;
     
-    public partial class Jogo
+    public partial class Jogo : Midia
     {
         public Jogo()
         {
@@ -20,11 +20,6 @@ namespace Locadora.Models.BusinessLayer
             this.PlataformasJogo = new HashSet<PlataformasJogo>();
         }
     
-        public int IdJogo { get; set; }
-        public string Titulo { get; set; }
-        public string Ano { get; set; }
-        public byte[] Capa { get; set; }
-        public int IdGenero { get; set; }
     
         public virtual ICollection<Copia> Copia { get; set; }
         public virtual Genero Genero { get; set; }

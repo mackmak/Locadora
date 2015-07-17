@@ -37,21 +37,22 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.JogoProp.IdGenero)
+            @Html.DisplayName("Gênero")
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.JogoProp.IdGenero)
+            @Html.DisplayFor(model => model.JogoProp.Genero.NomeGenero)
         </dd>
 
         <dt>
             @Html.DisplayName("Plataforma")
         </dt>
+
         <dd>
-            @{
-            foreach(var item in Model.ListaConsolesSelecionados)   
-                <ul>@item.NomeConsole</ul>  
-            }  
+            @foreach (var item in Model.ListaConsolesSelecionados)
+            {
+                <ul>@item.NomeConsole</ul>
+            }
         </dd>
 
     </dl>

@@ -42,7 +42,7 @@ namespace Locadora.Controllers
             Image arquivo = null;
             using (LocadoraEntities context = new LocadoraEntities())
             {
-                var listaBytes = context.Filme.Select(c => c.Capa).FirstOrDefault();
+                var listaBytes = context.Midia.Select(c => c.Capa).FirstOrDefault();
 
                 byte[] bytes = listaBytes.ToArray();
 
@@ -58,7 +58,7 @@ namespace Locadora.Controllers
         {
 
             LocadoraEntities context = new LocadoraEntities();
-            IQueryable<byte[]> listaBytes = context.Jogo.Select(c => c.Capa);
+            IQueryable<byte[]> listaBytes = context.Midia.Select(c => c.Capa);
 
 
             byte[] ms = listaBytes.ToList().ElementAt(0);

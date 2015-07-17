@@ -1,9 +1,8 @@
 ﻿using Locadora.Models.AccessLayer;
+using Locadora.Models.AcessLayer;
 using Locadora.Models.BusinessLayer;
-using Locadora.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Mvc;
 
@@ -51,10 +50,10 @@ namespace Locadora.Models.ViewModels
 
         public JogoViewModel(int idJogo)
         {
-            _jogo = new Repositorio().ObterJogo(idJogo);
+            _jogo = new JogoAccess().ObterJogo(idJogo);
             string strCapa = Convert.ToBase64String(_jogo.Capa);
             NomeImagem = string.Format("data:image/jpg;base64,{0}", strCapa);
-            ListaConsolesSelecionados = new Repositorio().ListarConsolesSelecionados(_jogo.IdJogo);
+            ListaConsolesSelecionados = new Repositorio().ListarConsolesSelecionados(_jogo.IdMidia);
 
         }
 
