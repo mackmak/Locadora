@@ -19,7 +19,12 @@ namespace Locadora.Models.AcessLayer
             Jogo jogo = null;
             using (var contexto = new LocadoraEntities())
             {
-                jogo = contexto.Midia.Include("PlataformasJogo").Include("Genero").Where(j => j.IdMidia == idJogo).Select(j => j as Jogo).FirstOrDefault();
+                jogo = contexto.Midia.Where(j => j.IdMidia == idJogo).Select(j => j as Jogo).FirstOrDefault();
+                var entry = contexto.Entry(jogo);
+
+                //A referência deve vir antes da coleção, por limitação do EF
+                entry.Reference(j => j.Genero).Load();
+                entry.Collection(j => j.PlataformasJogo).Load();
                 
             }
 
