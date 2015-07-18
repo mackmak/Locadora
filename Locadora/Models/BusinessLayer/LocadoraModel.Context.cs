@@ -32,5 +32,7 @@ namespace Locadora.Models.BusinessLayer
         public virtual DbSet<Genero> Genero { get; set; }
         public virtual DbSet<PlataformasJogo> PlataformasJogo { get; set; }
         public virtual DbSet<Midia> Midia { get; set; }
+        public virtual DbSet<Atores> Atores { get; set; }
+        public virtual DbSet<Diretores> Diretores { get; set; }
     }
 }

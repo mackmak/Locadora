@@ -11,10 +11,7 @@ namespace Locadora.Utils
         private Stream stream;
         private string nomeArquivo;
 
-        public ArquivoPostado()
-        {
-
-        }
+        public ArquivoPostado(){}
 
         public override int ContentLength { get { return (int)stream.Length; } }
 

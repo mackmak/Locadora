@@ -170,6 +170,9 @@
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Models\AccessLayer\MidiaAccess.cs" />
+    <Compile Include="Models\BusinessLayer\Atores.cs">
+      <DependentUpon>LocadoraModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\BusinessLayer\Cliente.cs">
       <DependentUpon>LocadoraModel.tt</DependentUpon>
     </Compile>
@@ -177,6 +180,9 @@
       <DependentUpon>LocadoraModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BusinessLayer\Copia.cs">
+      <DependentUpon>LocadoraModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\BusinessLayer\Diretores.cs">
       <DependentUpon>LocadoraModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BusinessLayer\Emprestimo.cs">
@@ -259,9 +265,9 @@
       <LastGenOutput>LocadoraModel.cs</LastGenOutput>
     </Content>
     <Content Include="Areas\Admin\Views\web.config" />
-    <Content Include="Areas\Admin\Views\Admin\CreateJogo.cshtml" />
-    <Content Include="Areas\Admin\Views\Admin\Alterar.cshtml" />
     <Content Include="App_Data\Locadora.bak" />
+    <Content Include="Areas\Admin\Views\Admin\Alterar.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\CreateJogo.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\Excluir.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

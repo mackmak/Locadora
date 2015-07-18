@@ -12,19 +12,16 @@ namespace Locadora.Models.BusinessLayer
     using System;
     using System.Collections.Generic;
     
-    public partial class Filme : Midia
+    public partial class Atores
     {
-        public Filme()
+        public Atores()
         {
-            this.Copia = new HashSet<Copia>();
-            this.Diretores = new HashSet<Diretores>();
-            this.Atores = new HashSet<Atores>();
+            this.Filme = new HashSet<Filme>();
         }
     
+        public int IdAtor { get; set; }
+        public string Nome { get; set; }
     
-        public virtual ICollection<Copia> Copia { get; set; }
-        public virtual Genero Genero { get; set; }
-        public virtual ICollection<Diretores> Diretores { get; set; }
-        public virtual ICollection<Atores> Atores { get; set; }
+        public virtual ICollection<Filme> Filme { get; set; }
     }
 }

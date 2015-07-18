@@ -4,15 +4,19 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="LocadoraModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" 
-            xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" 
-            xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" 
-            xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="LocadoraModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="__RefactorLog">
           <Key>
             <PropertyRef Name="OperationKey" />
           </Key>
           <Property Name="OperationKey" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Atores">
+          <Key>
+            <PropertyRef Name="IdAtor" />
+          </Key>
+          <Property Name="IdAtor" Type="int" Nullable="false" />
+          <Property Name="Nome" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Cliente">
           <Key>
@@ -39,6 +43,29 @@
           <Property Name="IdFilme" Type="int" />
           <Property Name="Disponivel" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="Direcao">
+          <Key>
+            <PropertyRef Name="IdFilme" />
+            <PropertyRef Name="IdDiretor" />
+          </Key>
+          <Property Name="IdFilme" Type="int" Nullable="false" />
+          <Property Name="IdDiretor" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Diretores">
+          <Key>
+            <PropertyRef Name="IdDiretor" />
+          </Key>
+          <Property Name="IdDiretor" Type="int" Nullable="false" />
+          <Property Name="Nome" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Elenco">
+          <Key>
+            <PropertyRef Name="IdFilme" />
+            <PropertyRef Name="IdAtor" />
+          </Key>
+          <Property Name="IdFilme" Type="int" Nullable="false" />
+          <Property Name="IdAtor" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Emprestimo">
           <Key>
             <PropertyRef Name="IdMatricula" />
@@ -55,7 +82,7 @@
           </Key>
           <Property Name="IdFilme" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Titulo" Type="varchar" MaxLength="30" Nullable="false" />
-          <Property Name="Ano" Type="char" MaxLength="4" Nullable="false" />
+          <Property Name="Ano" Type="char" MaxLength="4" />
           <Property Name="Capa" Type="image" />
           <Property Name="IdGenero" Type="int" Nullable="false" />
         </EntityType>
@@ -115,6 +142,54 @@
             </Principal>
             <Dependent Role="Copia">
               <PropertyRef Name="IdJogo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Direcao_Diretores">
+          <End Role="Diretores" Type="Self.Diretores" Multiplicity="1" />
+          <End Role="Direcao" Type="Self.Direcao" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Diretores">
+              <PropertyRef Name="IdDiretor" />
+            </Principal>
+            <Dependent Role="Direcao">
+              <PropertyRef Name="IdDiretor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Direcao_Filme">
+          <End Role="Filme" Type="Self.Filme" Multiplicity="1" />
+          <End Role="Direcao" Type="Self.Direcao" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Filme">
+              <PropertyRef Name="IdFilme" />
+            </Principal>
+            <Dependent Role="Direcao">
+              <PropertyRef Name="IdFilme" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Elenco_Atores">
+          <End Role="Atores" Type="Self.Atores" Multiplicity="1" />
+          <End Role="Elenco" Type="Self.Elenco" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Atores">
+              <PropertyRef Name="IdAtor" />
+            </Principal>
+            <Dependent Role="Elenco">
+              <PropertyRef Name="IdAtor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Elenco_Filme">
+          <End Role="Filme" Type="Self.Filme" Multiplicity="1" />
+          <End Role="Elenco" Type="Self.Elenco" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Filme">
+              <PropertyRef Name="IdFilme" />
+            </Principal>
+            <Dependent Role="Elenco">
+              <PropertyRef Name="IdFilme" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -190,22 +265,24 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Function Name="QtdMidiaDisponivel" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" 
-                  ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+        <Function Name="QtdMidiaDisponivel" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="CodMidia" Type="int" Mode="In" />
           <Parameter Name="EhJogo" Type="bit" Mode="In" />
           <Parameter Name="MidiasEncontradas" Type="int" Mode="InOut" />
         </Function>
         <EntityContainer Name="LocadoraModelStoreContainer">
-          <EntitySet Name="Filme" EntityType="Self.Filme" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Jogo" EntityType="Self.Jogo" Schema="dbo" store:Type="Tables" />
-
           <EntitySet Name="__RefactorLog" EntityType="Self.__RefactorLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Atores" EntityType="Self.Atores" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cliente" EntityType="Self.Cliente" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Console" EntityType="Self.Console" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Copia" EntityType="Self.Copia" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Direcao" EntityType="Self.Direcao" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Diretores" EntityType="Self.Diretores" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Elenco" EntityType="Self.Elenco" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Emprestimo" EntityType="Self.Emprestimo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Filme" EntityType="Self.Filme" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Genero" EntityType="Self.Genero" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Jogo" EntityType="Self.Jogo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PlataformasJogo" EntityType="Self.PlataformasJogo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Copia_Filme" Association="Self.FK_Copia_Filme">
@@ -215,6 +292,22 @@
           <AssociationSet Name="FK_Copia_Jogo" Association="Self.FK_Copia_Jogo">
             <End Role="Jogo" EntitySet="Jogo" />
             <End Role="Copia" EntitySet="Copia" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Direcao_Diretores" Association="Self.FK_Direcao_Diretores">
+            <End Role="Diretores" EntitySet="Diretores" />
+            <End Role="Direcao" EntitySet="Direcao" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Direcao_Filme" Association="Self.FK_Direcao_Filme">
+            <End Role="Filme" EntitySet="Filme" />
+            <End Role="Direcao" EntitySet="Direcao" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Elenco_Atores" Association="Self.FK_Elenco_Atores">
+            <End Role="Atores" EntitySet="Atores" />
+            <End Role="Elenco" EntitySet="Elenco" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Elenco_Filme" Association="Self.FK_Elenco_Filme">
+            <End Role="Filme" EntitySet="Filme" />
+            <End Role="Elenco" EntitySet="Elenco" />
           </AssociationSet>
           <AssociationSet Name="FK_Emprestimo_Cliente" Association="Self.FK_Emprestimo_Cliente">
             <End Role="Cliente" EntitySet="Cliente" />
@@ -241,8 +334,7 @@
             <End Role="PlataformasJogo" EntitySet="PlataformasJogo" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="LocadoraModel" Alias="Self" annotation:UseStrongSpatialTypes="false" 
@@ -294,6 +386,8 @@
         <EntityType Name="Filme" BaseType="LocadoraModel.Midia">
           <NavigationProperty Name="Copia" Relationship="Self.FK_Copia_Filme" FromRole="Filme" ToRole="Copia" />
           <NavigationProperty Name="Genero" Relationship="Self.FK_Filme_Genero" FromRole="Filme" ToRole="Genero" />
+          <NavigationProperty Name="Diretores" Relationship="LocadoraModel.Direcao" FromRole="Filme" ToRole="Diretores" />
+          <NavigationProperty Name="Atores" Relationship="LocadoraModel.Elenco" FromRole="Filme" ToRole="Atores" />
         </EntityType>
         <EntityType Name="Genero">
           <Key>
@@ -454,6 +548,16 @@
             <End Role="PlataformasJogo" EntitySet="PlataformasJogo" />
           </AssociationSet>
           <EntitySet Name="Midia" EntityType="LocadoraModel.Midia" />
+          <EntitySet Name="Atores" EntityType="LocadoraModel.Atores" />
+          <EntitySet Name="Diretores" EntityType="LocadoraModel.Diretores" />
+          <AssociationSet Name="Direcao" Association="LocadoraModel.Direcao">
+            <End Role="Diretores" EntitySet="Diretores" />
+            <End Role="Filme" EntitySet="Midia" />
+          </AssociationSet>
+          <AssociationSet Name="Elenco" Association="LocadoraModel.Elenco">
+            <End Role="Atores" EntitySet="Atores" />
+            <End Role="Filme" EntitySet="Midia" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Midia" Abstract="true">
           <Key>
@@ -465,6 +569,30 @@
           <Property Name="Capa" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="IdGenero" Type="Int32" Nullable="false" />
         </EntityType>
+        <EntityType Name="Atores">
+          <Key>
+            <PropertyRef Name="IdAtor" />
+          </Key>
+          <Property Name="IdAtor" Type="Int32" Nullable="false" />
+          <Property Name="Nome" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Filme" Relationship="LocadoraModel.Elenco" FromRole="Atores" ToRole="Filme" />
+        </EntityType>
+        <EntityType Name="Diretores">
+          <Key>
+            <PropertyRef Name="IdDiretor" />
+          </Key>
+          <Property Name="IdDiretor" Type="Int32" Nullable="false" />
+          <Property Name="Nome" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Filme" Relationship="LocadoraModel.Direcao" FromRole="Diretores" ToRole="Filme" />
+        </EntityType>
+        <Association Name="Direcao">
+          <End Type="LocadoraModel.Diretores" Role="Diretores" Multiplicity="*" />
+          <End Type="LocadoraModel.Filme" Role="Filme" Multiplicity="*" />
+        </Association>
+        <Association Name="Elenco">
+          <End Type="LocadoraModel.Atores" Role="Atores" Multiplicity="*" />
+          <End Type="LocadoraModel.Filme" Role="Filme" Multiplicity="*" />
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -527,25 +655,59 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Midia">
-            <EntityTypeMapping TypeName="IsTypeOf(LocadoraModel.Filme)">
-              <MappingFragment StoreEntitySet="Filme">
-                <ScalarProperty Name="IdMidia" ColumnName="IdFilme" />
-                <ScalarProperty Name="IdGenero" ColumnName="IdGenero" />
-                <ScalarProperty Name="Capa" ColumnName="Capa" />
-                <ScalarProperty Name="Ano" ColumnName="Ano" />
-                <ScalarProperty Name="Titulo" ColumnName="Titulo" />
-              </MappingFragment>
-            </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(LocadoraModel.Jogo)">
               <MappingFragment StoreEntitySet="Jogo">
                 <ScalarProperty Name="IdMidia" ColumnName="IdJogo" />
-                <ScalarProperty Name="IdGenero" ColumnName="IdGenero" />
-                <ScalarProperty Name="Capa" ColumnName="Capa" />
-                <ScalarProperty Name="Ano" ColumnName="Ano" />
                 <ScalarProperty Name="Titulo" ColumnName="Titulo" />
+                <ScalarProperty Name="Ano" ColumnName="Ano" />
+                <ScalarProperty Name="Capa" ColumnName="Capa" />
+                <ScalarProperty Name="IdGenero" ColumnName="IdGenero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+
+            <EntityTypeMapping TypeName="IsTypeOf(LocadoraModel.Filme)">
+              <MappingFragment StoreEntitySet="Filme">
+                <ScalarProperty Name="IdMidia" ColumnName="IdFilme" />
+                <ScalarProperty Name="Titulo" ColumnName="Titulo" />
+                <ScalarProperty Name="Ano" ColumnName="Ano" />
+                <ScalarProperty Name="Capa" ColumnName="Capa" />
+                <ScalarProperty Name="IdGenero" ColumnName="IdGenero" />
+              </MappingFragment>
+            </EntityTypeMapping>
+           
+          </EntitySetMapping>
+          <EntitySetMapping Name="Atores">
+            <EntityTypeMapping TypeName="LocadoraModel.Atores">
+              <MappingFragment StoreEntitySet="Atores">
+                <ScalarProperty Name="Nome" ColumnName="Nome" />
+                <ScalarProperty Name="IdAtor" ColumnName="IdAtor" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Diretores">
+            <EntityTypeMapping TypeName="LocadoraModel.Diretores">
+              <MappingFragment StoreEntitySet="Diretores">
+                <ScalarProperty Name="Nome" ColumnName="Nome" />
+                <ScalarProperty Name="IdDiretor" ColumnName="IdDiretor" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="Direcao" TypeName="LocadoraModel.Direcao" StoreEntitySet="Direcao">
+            <EndProperty Name="Filme">
+              <ScalarProperty Name="IdMidia" ColumnName="IdFilme" />
+            </EndProperty>
+            <EndProperty Name="Diretores">
+              <ScalarProperty Name="IdDiretor" ColumnName="IdDiretor" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="Elenco" TypeName="LocadoraModel.Elenco" StoreEntitySet="Elenco">
+            <EndProperty Name="Filme">
+              <ScalarProperty Name="IdMidia" ColumnName="IdFilme" />
+            </EndProperty>
+            <EndProperty Name="Atores">
+              <ScalarProperty Name="IdAtor" ColumnName="IdAtor" />
+            </EndProperty>
+          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
