@@ -16,12 +16,12 @@ namespace Locadora.Models.BusinessLayer
     {
         public Atores()
         {
-            this.Filme = new HashSet<Filme>();
+            this.Filmes = new HashSet<Filme>();
         }
     
         public int IdAtor { get; set; }
         public string Nome { get; set; }
     
-        public virtual ICollection<Filme> Filme { get; set; }
+        public virtual ICollection<Filme> Filmes { get; set; }
     }
 }

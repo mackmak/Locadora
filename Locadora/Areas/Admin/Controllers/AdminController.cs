@@ -3,7 +3,9 @@ using System.Web;
 using System.Web.Mvc;
 using Locadora.Models.ViewModels;
 using Locadora.Controllers;
-using Locadora.Models.AcessLayer;
+using Locadora.Models.AccessLayer.Repositories;
+using Locadora.Utils.UnitOfWork;
+using Locadora.Models.BusinessLayer.Contexts;
 
 namespace Locadora.Areas.Admin.Controllers
 {
@@ -23,10 +25,19 @@ namespace Locadora.Areas.Admin.Controllers
             return View();
         }
 
+        #region "Jogo"
         // GET: Admin/Admin/Create
         public ActionResult CreateJogo()
         {
-            return View(new JogoViewModel());
+            try
+            {
+                return View(new JogoViewModel());
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
         }
 
         // POST: Admin/Admin/Create
@@ -36,7 +47,7 @@ namespace Locadora.Areas.Admin.Controllers
             try
             {
                 if (ModelState.IsValid)
-                    new JogoAccess().InserirJogo(viewModel.JogoProp);
+                    new UnitOfWork(new JogoContext()).Jogo.InserirJogo(viewModel.JogoProp);
 
                 return Sucesso();
             }
@@ -47,7 +58,7 @@ namespace Locadora.Areas.Admin.Controllers
         }
 
         // GET: Admin/Admin/Alterar/5
-        public ActionResult Alterar(int id)
+        public ActionResult AlterarJogo(int id)
         {
             try
             {
@@ -61,13 +72,13 @@ namespace Locadora.Areas.Admin.Controllers
 
         // POST: Admin/Admin/Alterar/5
         [HttpPost]
-        public ActionResult Alterar(JogoViewModel viewModel)
+        public ActionResult AlterarJogo(JogoViewModel viewModel)
         {
             try
             {
                 // TODO: Add update logic here
                 if (ModelState.IsValid)
-                    new JogoAccess().AlterarJogo(viewModel);
+                    new UnitOfWork(new JogoContext()).Jogo.AlterarJogo(viewModel);
 
                 return Sucesso();
             }
@@ -78,7 +89,7 @@ namespace Locadora.Areas.Admin.Controllers
         }
 
         // GET: Admin/Admin/Delete/5
-        public ActionResult Excluir(int id)
+        public ActionResult ExcluirJogo(int id)
         {
             try
             {
@@ -92,11 +103,11 @@ namespace Locadora.Areas.Admin.Controllers
 
         // POST: Admin/Admin/Delete/5
         [HttpPost]
-        public ActionResult Excluir(JogoViewModel viewModel)
+        public ActionResult ExcluirJogo(JogoViewModel viewModel)
         {
             try
             {
-                new JogoAccess().ExcluirJogo(viewModel);
+                new UnitOfWork(new JogoContext()).Jogo.ExcluirJogo(viewModel);
 
                 return Sucesso();
             }
@@ -106,8 +117,36 @@ namespace Locadora.Areas.Admin.Controllers
             }
         }
 
-      
+        #endregion "Jogo"
 
+        #region "Filme"
+        public ActionResult CreateFilme()
+        {
+            try
+            {
+                return View(new FilmeViewModel());
+            }
+            catch (Exception e)
+            {
+                return Erro(e);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult CreateFilme(FilmeViewModel viewModel)
+        {
+            try
+            {
+                new UnitOfWork(new FilmeContext()).Filme.InserirFilme(viewModel.FilmeProp);
+
+                return Sucesso();
+            }
+            catch (Exception e)
+            {
+                return Erro(e);
+            }
+        }
+        #endregion "Filme"
 
 
 

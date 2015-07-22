@@ -8,8 +8,8 @@ namespace Locadora.Utils
 {
     public class ArquivoPostado:HttpPostedFileBase
     {
-        private Stream stream;
-        private string nomeArquivo;
+        private Stream stream = null;
+        private string nomeArquivo = null;
 
         public ArquivoPostado(){}
 

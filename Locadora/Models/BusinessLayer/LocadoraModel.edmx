@@ -575,7 +575,7 @@
           </Key>
           <Property Name="IdAtor" Type="Int32" Nullable="false" />
           <Property Name="Nome" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Filme" Relationship="LocadoraModel.Elenco" FromRole="Atores" ToRole="Filme" />
+          <NavigationProperty Name="Filmes" Relationship="LocadoraModel.Elenco" FromRole="Atores" ToRole="Filme" />
         </EntityType>
         <EntityType Name="Diretores">
           <Key>
@@ -583,7 +583,7 @@
           </Key>
           <Property Name="IdDiretor" Type="Int32" Nullable="false" />
           <Property Name="Nome" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Filme" Relationship="LocadoraModel.Direcao" FromRole="Diretores" ToRole="Filme" />
+          <NavigationProperty Name="Filmes" Relationship="LocadoraModel.Direcao" FromRole="Diretores" ToRole="Filme" />
         </EntityType>
         <Association Name="Direcao">
           <End Type="LocadoraModel.Diretores" Role="Diretores" Multiplicity="*" />

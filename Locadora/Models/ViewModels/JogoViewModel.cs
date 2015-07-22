@@ -1,14 +1,12 @@
-﻿using Locadora.Models.AccessLayer;
-using Locadora.Models.AcessLayer;
-using Locadora.Models.BusinessLayer;
+﻿using Locadora.Models.BusinessLayer;
+using Locadora.Models.BusinessLayer.Contexts;
+using Locadora.Utils.UnitOfWork;
 using System;
 using System.Collections.Generic;
-using System.Web;
-using System.Web.Mvc;
 
 namespace Locadora.Models.ViewModels
 {
-    public class JogoViewModel
+    public class JogoViewModel : MidiaViewModel
     {
         private Jogo _jogo;
 
@@ -20,20 +18,11 @@ namespace Locadora.Models.ViewModels
             { _jogo = value; }
         }
 
-        public string Message { get; set; }
-
-        public HttpPostedFileBase Imagem { get; set; }
-
-        public string NomeImagem { get; set; }
-
-        public IEnumerable<SelectListItem> ListaGeneros
-        {
-            get { return new Repositorio().ListarGeneros(); }
-        }
+        private UnitOfWork unitOfWork = null;
 
         public IEnumerable<BusinessLayer.Console> ListaConsoles
         {
-            get { return new Repositorio().ListarConsoles(); }
+            get { return unitOfWork.Jogo.ListarConsoles(); }
         }
 
         public IEnumerable<BusinessLayer.Console> ListaConsolesSelecionados { get; set; }
@@ -43,6 +32,7 @@ namespace Locadora.Models.ViewModels
 
         public JogoViewModel()
         {
+            unitOfWork = new UnitOfWork(new JogoContext());
             _jogo = new Jogo();
             ListaConsolesSelecionados = new List<BusinessLayer.Console>();
 
@@ -50,18 +40,19 @@ namespace Locadora.Models.ViewModels
 
         public JogoViewModel(int idJogo)
         {
-            _jogo = new JogoAccess().ObterJogo(idJogo);
+            unitOfWork = new UnitOfWork(new JogoContext());
+
+            _jogo = unitOfWork.Jogo.ObterJogo(idJogo);
             string strCapa = Convert.ToBase64String(_jogo.Capa);
             NomeImagem = string.Format("data:image/jpg;base64,{0}", strCapa);
-            ListaConsolesSelecionados = new Repositorio().ListarConsolesSelecionados(_jogo.IdMidia);
-
+            ListaConsolesSelecionados = unitOfWork.Jogo.ObterConsolesSelecionados(_jogo.IdMidia);
         }
 
-        public JogoViewModel(string message)
-            : this()
+        public void AlterarJogo(JogoViewModel viewModel)
         {
-            this.Message = message;
+            unitOfWork.Jogo.AlterarJogo(viewModel);
         }
+
 
     }
 }
