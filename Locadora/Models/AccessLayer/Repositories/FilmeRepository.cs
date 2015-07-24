@@ -71,7 +71,7 @@ namespace Locadora.Models.AccessLayer.Repositories
             filme.IdGenero = viewModel.FilmeProp.IdGenero;*/
         }
 
-        private DbEntityEntry AtribuiEntryEF(FilmeContext contexto, FilmeViewModel viewModel)
+        /*private DbEntityEntry AtribuiEntryEF(FilmeContext contexto, FilmeViewModel viewModel)
         {
             var filme = AtribuirFilme(viewModel);
 
@@ -84,7 +84,7 @@ namespace Locadora.Models.AccessLayer.Repositories
             entry.Collection(f => f.Diretores).Load();
 
             //Aqui, o contexto fica ciente das alterações
-            filme.
+            //filme.
 
         }
 
@@ -96,10 +96,10 @@ namespace Locadora.Models.AccessLayer.Repositories
             //Se a quantidade for a mesma, apenas alterar os valores
             if (atores.Count() == idAtores.Count())
                 atores = ReatribuirColecao<Atores>(atores, idAtores).ToList();
-            else//Senão, remover tudo e criar novos
+            //else//Senão, remover tudo e criar novos
 
 
-        }
+        }*/
 
         private ICollection<T> ReatribuirColecao<T>(IEnumerable<T> colecao, IEnumerable<int> idsColecao) where T: class
         {
@@ -113,11 +113,14 @@ namespace Locadora.Models.AccessLayer.Repositories
             return colecao.ToList();
         }
 
-        private ICollection<T> ModificarAtores<T>(IEnumerable<T> colecaoAntiga, IEnumerable<int> idsColecao, BaseContext context) where T : class
+        /*private ICollection<T> ModificarAtores<T>(IEnumerable<T> filmesAntigo, IEnumerable<int> idsColecao, BaseContext context) where T : class
         {
+            var entidade = context.Set<T>();
+           // var colecaoNova = entidade.Where<T>(x => x.GetType().GetProperty("Filmes").)
+
             //Excluindo coleção
-            BaseContext.
-        }
+            
+        }*/
 
         #endregion "Persistence"
 
