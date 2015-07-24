@@ -41,18 +41,8 @@ namespace Locadora.Models.AccessLayer.Repositories
 
         private Jogo AtribuirJogo(JogoViewModel viewModel)
         {
-            var jogo = ReatribuirJogo(viewModel);
-
-            return jogo;
-        }
-
-        public Jogo ReatribuirJogo(JogoViewModel viewModel)
-        {
-            Jogo jogo = null;
-
-            jogo = ObterJogo(viewModel.JogoProp.IdMidia);
+            var jogo = ObterJogo(viewModel.JogoProp.IdMidia);
             AlterarValoresJogo(jogo, viewModel);
-
 
             return jogo;
         }
@@ -65,8 +55,6 @@ namespace Locadora.Models.AccessLayer.Repositories
             jogo.IdGenero = viewModel.JogoProp.IdGenero;
             jogo.Capa = ObterImagem(viewModel);
         }
-
-
 
         private DbEntityEntry AtribuiEntryEF(JogoContext contexto, JogoViewModel viewModel)
         {
@@ -149,10 +137,10 @@ namespace Locadora.Models.AccessLayer.Repositories
 
         private ICollection<PlataformasJogo> AlterarPlataformasJogo(int idJogo, IEnumerable<int> idConsoles, JogoContext contexto)
         {
-            //A collection deve ser recuperada para alteração, pois a id é requisitada
+            //A collection deve ser recuperada para alteração, pois a id é requisitada pelo EF
             var plataformasJogo = contexto.PlataformasJogo.Where(pj => pj.IdJogo == idJogo).ToList();
 
-            //Caso a quantidade seja igual, apenas alterar os ids
+            //Caso a quantidade seja igual, apenas alterar os ids dos consoles
             if (plataformasJogo.Count == idConsoles.Count())
                 plataformasJogo = ReatribuiPlataformasJogo(plataformasJogo, idConsoles).ToList();
             else//Caso contrário, deverá excluir as plataformas e criar novas...
@@ -171,7 +159,7 @@ namespace Locadora.Models.AccessLayer.Repositories
         #endregion Transactions
 
 
-        #region "Reading
+        #region Reading
 
         public Jogo ObterJogo(int idJogo)
         {
@@ -249,7 +237,7 @@ namespace Locadora.Models.AccessLayer.Repositories
         }
 
 
-        #endregion
+        #endregion Reading
 
     }
 }
