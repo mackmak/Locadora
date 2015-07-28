@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Locadora;
 using Locadora.Controllers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Locadora.Tests.Controllers
 {

@@ -71,7 +71,7 @@ namespace Locadora.Models.AccessLayer.Repositories
             filme.IdGenero = viewModel.FilmeProp.IdGenero;*/
         }
 
-        /*private DbEntityEntry AtribuiEntryEF(FilmeContext contexto, FilmeViewModel viewModel)
+        private DbEntityEntry AtribuiEntryEF(FilmeContext contexto, FilmeViewModel viewModel)
         {
             var filme = AtribuirFilme(viewModel);
 
@@ -83,23 +83,39 @@ namespace Locadora.Models.AccessLayer.Repositories
             entry.Collection(f => f.Atores).Load();
             entry.Collection(f => f.Diretores).Load();
 
-            //Aqui, o contexto fica ciente das alterações
-            //filme.
 
+            IList<int> listaIdAtores = new List<int>();
+            foreach (var item in filme.Atores)
+                listaIdAtores.Add(item.IdAtor);
+            //Aqui, o contexto fica ciente das alterações
+            filme.Atores = AlterarAtores<Atores>(filme,listaIdAtores.ToList(),contexto);
+
+            return entry;
         }
 
-        private ICollection<Atores> AlterarAtores(Filme filme, IEnumerable<int> idAtores, FilmeContext filmeContext)
+        private ICollection<T> AlterarAtores<T>(Filme filme, IEnumerable<int> idAtores, BaseContext context) where T : class, new()
         {
-            //Como a id de cada ators é requisitada pelo EF, os atores devem ser recuperados primeiro
-            var atores = filmeContext.Atores.Where(a => a.Filmes.Contains(filme)).ToList();
+            var entidade = context.Set<T>();
+
+            object[] listaObj = new object[] { filme};
+
+            //Como a id de cada ator é requisitada pelo EF, os atores devem ser recuperados primeiro
+            //var atores = entidade.Contains<T>(filme); //.Where(a => a.GetType().GetMethod("Contains").Invoke(a, listaObj)).ToList();
+
+            IList<T> atores = new List<T>();
+            foreach (var item in entidade)
+                atores.Add((T) item.GetType().GetMethod("Contains").Invoke(item, listaObj));
+            
+
 
             //Se a quantidade for a mesma, apenas alterar os valores
             if (atores.Count() == idAtores.Count())
-                atores = ReatribuirColecao<Atores>(atores, idAtores).ToList();
-            //else//Senão, remover tudo e criar novos
+                atores = ReatribuirColecao<T>(atores, idAtores).ToList();
+            else//Senão, remover tudo e criar novos
+                atores = RefazerColecao<T>(atores, idAtores, context, "Nome").ToList();
 
-
-        }*/
+            return atores;
+        }
 
         private ICollection<T> ReatribuirColecao<T>(IEnumerable<T> colecao, IEnumerable<int> idsColecao) where T: class
         {
@@ -113,14 +129,39 @@ namespace Locadora.Models.AccessLayer.Repositories
             return colecao.ToList();
         }
 
-        /*private ICollection<T> ModificarAtores<T>(IEnumerable<T> filmesAntigo, IEnumerable<int> idsColecao, BaseContext context) where T : class
+        private ICollection<T> RefazerColecao<T>(IEnumerable<T> colecaoAntiga, IEnumerable<int> idsColecao, 
+            BaseContext context, string nomeCampo) where T : class, new()
         {
-            var entidade = context.Set<T>();
-           // var colecaoNova = entidade.Where<T>(x => x.GetType().GetProperty("Filmes").)
-
             //Excluindo coleção
-            
-        }*/
+            var entidade = context.Set<T>();
+            entidade.RemoveRange(colecaoAntiga);
+
+            string valor = colecaoAntiga.ElementAt(0).GetType().GetProperty(nomeCampo).GetValue(null).ToString();
+
+
+            IDictionary<string,string> dicionario = new Dictionary<string, string>();
+            dicionario.Add(valor, nomeCampo);
+
+            //Criando novos
+            return CriarColecao<T>(idsColecao, context, dicionario);
+        }
+
+        private ICollection<T> CriarColecao<T>(IEnumerable<int> idsColecao, 
+            BaseContext context, IDictionary<string,string> objectParameters) where T : class, new()
+        {
+            IList<T> novaColecao = new List<T>();
+
+            foreach (var id in idsColecao)
+            {
+                T campo = new T();
+                foreach (KeyValuePair<string, string> parametro in objectParameters)
+                    campo.GetType().GetProperty(parametro.Key.ToString()).SetValue(campo.GetType(), parametro.Value);
+
+                novaColecao.Add(campo);
+            }
+
+            return novaColecao;
+        } 
 
         #endregion "Persistence"
 
