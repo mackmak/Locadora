@@ -24,17 +24,15 @@ namespace Locadora.Models.AccessLayer.Repositories
             _contexto = contextoJogo;
         }
 
-        public void Dispose()
-        {
-            if (_contexto != null)
-                _contexto.Dispose();
-        }
         #endregion
 
         #region Transactions
 
-        public void InserirJogo(Jogo jogo)
+        public void InserirJogo(JogoViewModel viewModel)
         {
+            Jogo jogo = new Jogo();
+            AlterarValoresJogo(jogo, viewModel);
+
             _contexto.Jogo.Add(jogo);
             _contexto.SaveChanges();
         }
@@ -53,6 +51,7 @@ namespace Locadora.Models.AccessLayer.Repositories
             jogo.Ano = viewModel.JogoProp.Ano;
             jogo.Genero = viewModel.JogoProp.Genero;
             jogo.IdGenero = viewModel.JogoProp.IdGenero;
+            jogo.PlataformasJogo = viewModel.JogoProp.PlataformasJogo;
             jogo.Capa = ObterImagem(viewModel);
         }
 
@@ -111,13 +110,13 @@ namespace Locadora.Models.AccessLayer.Repositories
 
         private ICollection<PlataformasJogo> CriarPlataformasJogo(IEnumerable<int> idConsoles, int idJogo, JogoContext jogoContext)
         {
-            IList<PlataformasJogo> plataformasNovas = new List<PlataformasJogo>();
+            var plataformasNovas = new List<PlataformasJogo>();
             foreach (var item in idConsoles)
             {
                 plataformasNovas.Add(new PlataformasJogo { IdConsole = item, IdJogo = idJogo });
             }
-
             jogoContext.PlataformasJogo.AddRange(plataformasNovas);
+            jogoContext.SaveChanges();
 
             return plataformasNovas;
         }
@@ -130,7 +129,7 @@ namespace Locadora.Models.AccessLayer.Repositories
             int idJogo = plataformasJogoAntigas.ElementAt(0).IdJogo;
             //Criando novas
             return CriarPlataformasJogo(idConsoles, idJogo, jogoContext);
-            
+
 
         }
 
@@ -146,7 +145,7 @@ namespace Locadora.Models.AccessLayer.Repositories
             else//Caso contrário, deverá excluir as plataformas e criar novas...
                 plataformasJogo = ModificarPlataformasJogo(plataformasJogo, idConsoles, contexto).ToList();
 
-                return plataformasJogo;
+            return plataformasJogo;
         }
 
 
@@ -178,7 +177,7 @@ namespace Locadora.Models.AccessLayer.Repositories
             return jogo;
         }
 
-        public IEnumerable<BusinessLayer.Console> ObterConsolesSelecionados(IEnumerable<int> idsConsolesSelecionados)
+        public IEnumerable<Console> ObterConsolesSelecionados(IEnumerable<int> idsConsolesSelecionados)
         {
             var consolesSelecionados = new List<BusinessLayer.Console>();
 
@@ -193,7 +192,7 @@ namespace Locadora.Models.AccessLayer.Repositories
         }
 
 
-        public IEnumerable<BusinessLayer.Console> ObterConsolesSelecionados(int IdJogo)
+        public IList<Console> ObterConsolesSelecionados(int IdJogo)
         {
             var listaConsoles = new List<BusinessLayer.Console>();
 
@@ -211,29 +210,29 @@ namespace Locadora.Models.AccessLayer.Repositories
             return listaConsoles;
         }
 
-        public IEnumerable<SelectListItem> ListarGeneros()
-        {
-            var listaRetorno = new List<SelectListItem>();
 
-            var listaGeneros = _contexto.Genero.Select(g => new SelectListItem { Text = g.NomeGenero, Value = g.IdGenero.ToString() });
-
-            foreach (var item in listaGeneros)
-            {
-                listaRetorno.Add(item);
-            }
-
-            return listaRetorno;
-        }
-
-        public BusinessLayer.Console ObterConsole(int idConsole, JogoContext contexto)
+        public Console ObterConsole(int idConsole, JogoContext contexto)
         {
             return contexto.Console.Find(idConsole);
         }
 
-        public IEnumerable<BusinessLayer.Console> ListarConsoles()
+        public IEnumerable<Console> ListarConsoles()
         {
             return _contexto.Console.ToList();
 
+        }
+
+        private IEnumerable<PlataformasJogo> ObterPlataformasSelecionadas(IEnumerable<int> idConsoles)
+        {
+            var listaPlataformas = new List<PlataformasJogo>();
+
+            foreach (var idConsole in idConsoles)
+            {
+                var plataforma = _contexto.PlataformasJogo.Where(p => p.IdConsole == idConsole).FirstOrDefault();
+                listaPlataformas.Add(plataforma);
+            }
+
+            return listaPlataformas;
         }
 
 

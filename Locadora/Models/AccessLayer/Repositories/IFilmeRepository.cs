@@ -1,20 +1,16 @@
 ﻿using Locadora.Models.BusinessLayer;
 using Locadora.Models.ViewModels;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Locadora.Models.AccessLayer.Repositories
 {
-    public interface IFilmeRepository
+    public interface IFilmeRepository: IMidiaRepository
     {
 
         #region Transactions
 
-        void InserirFilme(Filme filme);
+        void InserirFilme(FilmeViewModel filme);
 
         void PersistirFilme(FilmeViewModel viewModel, EntityState estadoEntidade);
 
@@ -33,6 +29,10 @@ namespace Locadora.Models.AccessLayer.Repositories
         IEnumerable<Atores> ListaAtoresFilme(int idFilme);
 
         IEnumerable<Diretores> ListaDiretoresFilme(int idFilme);
+
+        IEnumerable<Atores> ListaAtores();
+
+        IEnumerable<Diretores> ListaDiretores();
         #endregion Reading
     }
 }

@@ -1,17 +1,16 @@
-﻿using Locadora.Models.BusinessLayer;
-using Locadora.Models.ViewModels;
+﻿using Locadora.Models.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web.Mvc;
 
-namespace Locadora.Models.AccessLayer.Repository
+namespace Locadora.Models.AccessLayer.Repositories
 {
-    interface IMidiaRepository:IDisposable
+    public interface IMidiaRepository
     {
-        T ObterMidia<T>(int idMidia) where T : class;
+        //T ObterMidia<T>(int idMidia) where T : class;
 
         byte[] ObterImagem(MidiaViewModel viewModel);
+
+        IEnumerable<SelectListItem> ListarGeneros();
     }
 }

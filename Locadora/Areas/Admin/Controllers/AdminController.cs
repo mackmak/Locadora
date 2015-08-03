@@ -6,6 +6,7 @@ using Locadora.Controllers;
 using Locadora.Models.AccessLayer.Repositories;
 using Locadora.Utils.UnitOfWork;
 using Locadora.Models.BusinessLayer.Contexts;
+using Locadora.Models.BusinessLayer;
 
 namespace Locadora.Areas.Admin.Controllers
 {
@@ -25,7 +26,7 @@ namespace Locadora.Areas.Admin.Controllers
             return View();
         }
 
-        #region "Jogo"
+        #region Jogo
         // GET: Admin/Admin/Create
         public ActionResult CreateJogo()
         {
@@ -35,7 +36,7 @@ namespace Locadora.Areas.Admin.Controllers
             }
             catch (Exception)
             {
-                
+
                 throw;
             }
         }
@@ -47,13 +48,17 @@ namespace Locadora.Areas.Admin.Controllers
             try
             {
                 if (ModelState.IsValid)
-                    new UnitOfWork(new JogoContext()).Jogo.InserirJogo(viewModel.JogoProp);
+                {
+                    new UnitOfWork(new JogoContext()).Jogo.InserirJogo(viewModel);
+                    return Sucesso();
+                }
+                else
+                    return View(viewModel);
 
-                return Sucesso();
             }
             catch (Exception e)
             {
-               return Erro(e);
+                return Erro(e);
             }
         }
 
@@ -76,13 +81,12 @@ namespace Locadora.Areas.Admin.Controllers
         {
             try
             {
-                // TODO: Add update logic here
                 if (ModelState.IsValid)
                     new UnitOfWork(new JogoContext()).Jogo.AlterarJogo(viewModel);
 
                 return Sucesso();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Erro(e);
             }
@@ -107,24 +111,29 @@ namespace Locadora.Areas.Admin.Controllers
         {
             try
             {
-                new UnitOfWork(new JogoContext()).Jogo.ExcluirJogo(viewModel);
-
-                return Sucesso();
+                if (ModelState.IsValid)
+                {
+                    new UnitOfWork(new JogoContext()).Jogo.ExcluirJogo(viewModel);
+                    return Sucesso();
+                }
+                else
+                    return View(new JogoViewModel(viewModel.JogoProp.IdMidia));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Erro(e);
             }
         }
 
-        #endregion "Jogo"
+        #endregion Jogo
 
-        #region "Filme"
+        #region Filme
         public ActionResult CreateFilme()
         {
             try
             {
                 return View(new FilmeViewModel());
+
             }
             catch (Exception e)
             {
@@ -137,7 +146,39 @@ namespace Locadora.Areas.Admin.Controllers
         {
             try
             {
-                new UnitOfWork(new FilmeContext()).Filme.InserirFilme(viewModel.FilmeProp);
+                if (ModelState.IsValid)
+                {   
+                    new UnitOfWork(new FilmeContext()).Filme.InserirFilme(viewModel);
+                    return Sucesso();
+                }
+                else
+                    return View(new FilmeViewModel(viewModel.FilmeProp.IdMidia));
+            }
+            catch (Exception e)
+            {
+                return Erro(e);
+            }
+        }
+
+
+        public ActionResult AlterarFilme(int id)
+        {
+            try
+            {
+                return View(new FilmeViewModel(id));
+            }
+            catch (Exception e)
+            {
+                return Erro(e);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AlterarFilme(FilmeViewModel viewModel)
+        {
+            try
+            {
+                new UnitOfWork(new FilmeContext()).Filme.AlterarFilme(viewModel);
 
                 return Sucesso();
             }
@@ -146,7 +187,66 @@ namespace Locadora.Areas.Admin.Controllers
                 return Erro(e);
             }
         }
-        #endregion "Filme"
+        #endregion Filme
+
+        #region Elenco
+
+        [HttpGet]
+        public ActionResult CreateAtor()
+        {
+            try
+            {
+                return View();
+            }
+            catch (Exception e)
+            {
+                return Erro(e);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult CreateAtor(Atores ator)
+        {
+            try
+            {
+                new UnitOfWork(new AtorContext()).Atores.InserirAtor(ator);
+
+                return Sucesso();
+            }
+            catch (Exception e)
+            {
+                return Erro(e);
+            }
+        }
+
+        public ActionResult CreateDiretor()
+        {
+            try
+            {
+                return View();
+            }
+            catch (Exception e)
+            {
+                return Erro(e);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult CreateDiretor(Diretores diretor)
+        {
+            try
+            {
+                new UnitOfWork(new DiretorContext()).Diretores.InserirDiretor(diretor);
+
+                return Sucesso();
+            }
+            catch (Exception e)
+            {
+                return Erro(e);
+            }
+        }
+
+        #endregion Elenco
 
 
 

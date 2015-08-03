@@ -1,0 +1,126 @@
+﻿@model Locadora.Models.ViewModels.FilmeViewModel
+
+@{
+    ViewBag.Title = "Inserir Filme";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Inserir Filme</h2>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Filme</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.FilmeProp.Titulo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FilmeProp.Titulo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FilmeProp.Titulo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FilmeProp.Ano, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FilmeProp.Ano, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FilmeProp.Ano, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FilmeProp.Capa, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Imagem, new { type = "file" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FilmeProp.IdGenero, "Gênero:", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.FilmeProp.IdGenero, Model.ListaGeneros, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Atores: ", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <table>
+                    <tr>
+                        <td>
+                            @Html.ListBox("lstAtores", Model.ListaAtores, htmlAttributes: new { @class = "form-control", size = 8 })
+                        </td>
+                        <td>
+                            <input type="button" id="btnAdicionarAtores" value="Selecionar" class="btn btn-default" onclick="BothWays(lstAtores, FilmeProp_Atores)"/>
+                        </td>
+                        <td>
+                            @Html.ListBoxFor(model => model.idAtoresSelecionados, new List<SelectListItem>(), htmlAttributes: new { @class = "form-control" })
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Diretores: ", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <table>
+                    <tr>
+                        <td>
+                            @Html.ListBox("lstDiretores", Model.ListaDiretores, htmlAttributes: new { @class = "form-control", size = 8 })
+                        </td>
+                        <td>
+                            <input type="button" id="btnAdicionarDiretores" value="Selecionar" class="btn btn-default" onclick="BothWays(lstDiretores, FilmeProp_Diretores)"/>
+                        </td>
+                        <td>
+                            @Html.ListBoxFor(model => model.idDiretoresSelecionados, new List<SelectListItem>(), htmlAttributes: new { @class = "form-control" })
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+        @section scripts{
+            <script language="javascript" type="text/javascript">
+                function BothWays(list1, List2){
+                    for (var i = 0; i < list1.options.length - 1; i++) {
+                        if(list1.options[i].selected == true){
+                            var selId = list1.options[i].value;
+                            var selText = list1.options[i].text;
+                            var newRow = new Option(selText, selId);
+                            List2.options[List2.length] = newRow;
+                            list1.options[i] = null;
+                        }
+                    }
+                }
+
+                function SortList(sortedItemvalue)
+                {
+                    for (var x = 0; x < sortedItemvalue.length - 1; x++) {
+                        for (var y = x + 1; y < sortedItemvalue.length; y++) {
+                            if (sortedItemvalue[x].text > sortedItemvalue[y].text) {
+                                //Swap values
+                                var id = sortedItemvalue[x].value;
+                                var text = sortedItemvalue[x].text;
+
+                                sortedItemvalue[x].value = sortedItemvalue[y].value;
+                                sortedItemvalue[x].text = sortedItemvalue[y].text;
+
+                                sortedItemvalue[y].value = id;
+                                sortedItemvalue[y].text = text;
+                            }
+                        }
+                    }
+                }
+            </script>
+            }
+    </div>
+}

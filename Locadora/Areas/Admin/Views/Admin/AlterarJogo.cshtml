@@ -3,7 +3,6 @@
 @{
     ViewBag.Title = "Alterar";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
 
 <h2>Alterar</h2>
@@ -51,30 +50,46 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.JogoProp.IdGenero, "Consoles:", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.CheckBoxListFor(model => model.ConsolesPostados.IdConsoles,  @*Os ID's que serão postados para o controller*@
-                 model => model.ListaConsoles,                                     @*As opções exibidas*@
-                 console => console.IdConsole,                                     @*O campo do objeto que é o ID*@
-                 console => console.NomeConsole,                                   @*A descrição na checkbox*@
-                 model => model.ListaConsolesSelecionados,                         @*Opções pré-marcadas*@
-                 MvcCheckBoxList.Model.Position.Horizontal)                        @*orientação da checkboxlist*@
-            </div>
+            @Html.Label("Plataformas: ", htmlAttributes: new { @class = "control-label col-md-2" })
+            <table class="col-md-10" style="width:300px">
+                <tr>
+
+                    @for (int i = 0; i < Model.ListaConsoles.Count(); i++)
+                    {
+                        var console = Model.ListaConsoles.ElementAt(i);
+
+                        string strIdConsole = ".IdConsole";
+                        string hiddenValue = string.Format("PJ{0}", i.ToString());
+                        string checkboxName = string.Format("JogoProp.PlataformasJogo[{0}]{1}", hiddenValue, strIdConsole);
+
+                        bool consoleChecked = false;
+                        if (Model.ListaConsolesSelecionados.Contains(console))
+                        {
+                            consoleChecked = true;
+                        }
+
+
+                        <td>
+                            <input type="hidden" name="JogoProp.PlataformasJogo.Index" value="@hiddenValue" />
+                            <input type="checkbox" name="@checkboxName" value="@console.IdConsole" checked="@consoleChecked" />
+                            <label for="@checkboxName">@console.NomeConsole</label>
+                        </td>
+                    }
+                </tr>
+            </table>
+
         </div>
 
-@Html.HiddenFor(model => model.NomeImagem)
+        @Html.HiddenFor(model => model.NomeImagem)
 
-<div class="form-group">
-    <div class="col-md-offset-2 col-md-10">
-        <input type="submit" value="Save" class="btn btn-default" />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
     </div>
-</div>
-</div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

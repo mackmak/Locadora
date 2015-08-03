@@ -15,7 +15,7 @@
           <Key>
             <PropertyRef Name="IdAtor" />
           </Key>
-          <Property Name="IdAtor" Type="int" Nullable="false" />
+          <Property Name="IdAtor" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Nome" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Cliente">
@@ -55,7 +55,7 @@
           <Key>
             <PropertyRef Name="IdDiretor" />
           </Key>
-          <Property Name="IdDiretor" Type="int" Nullable="false" />
+          <Property Name="IdDiretor" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Nome" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Elenco">
@@ -674,8 +674,9 @@
                 <ScalarProperty Name="IdGenero" ColumnName="IdGenero" />
               </MappingFragment>
             </EntityTypeMapping>
-           
+
           </EntitySetMapping>
+          
           <EntitySetMapping Name="Atores">
             <EntityTypeMapping TypeName="LocadoraModel.Atores">
               <MappingFragment StoreEntitySet="Atores">

@@ -49,9 +49,6 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="MvcCheckBoxList">
-      <HintPath>..\packages\MvcCheckBoxList.1.4.4.5\lib\net45\MvcCheckBoxList.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -170,6 +167,10 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Models\AccessLayer\Repositories\AtorRepository.cs" />
+    <Compile Include="Models\AccessLayer\Repositories\DiretorRepository.cs" />
+    <Compile Include="Models\AccessLayer\Repositories\IAtorRepository.cs" />
+    <Compile Include="Models\AccessLayer\Repositories\IDiretorRepository.cs" />
     <Compile Include="Models\AccessLayer\Repositories\IFilmeRepository.cs" />
     <Compile Include="Models\AccessLayer\Repositories\IJogoRepository.cs" />
     <Compile Include="Models\AccessLayer\Repositories\IMidiaRepository.cs" />
@@ -282,6 +283,10 @@
     <Content Include="Areas\Admin\Views\Admin\AlterarJogo.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\CreateJogo.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\ExcluirJogo.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\CreateFilme.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\AlterarFilme.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\CreateAtor.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\CreateDiretor.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

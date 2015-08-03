@@ -5,6 +5,7 @@ using Locadora.Models.ViewModels;
 using System.Data.Entity;
 using Locadora.Models.BusinessLayer.Contexts;
 using System.Data.Entity.Infrastructure;
+using System;
 
 namespace Locadora.Models.AccessLayer.Repositories
 {
@@ -21,11 +22,14 @@ namespace Locadora.Models.AccessLayer.Repositories
 
         #endregion ContextWorking
 
-        #region "Persistence"
+        #region Persistence
 
-        public void InserirFilme(Filme filme)
+        public void InserirFilme(FilmeViewModel viewModel)
         {
-            _contexto.Filme.Add(filme);
+            viewModel.FilmeProp.Atores = ListaAtores(viewModel.idAtoresSelecionados).ToList();
+            viewModel.FilmeProp.Diretores = ListaDiretores(viewModel.idDiretoresSelecionados).ToList();
+
+            _contexto.Filme.Add(viewModel.FilmeProp) ;
             _contexto.SaveChanges();
         }
 
@@ -84,9 +88,10 @@ namespace Locadora.Models.AccessLayer.Repositories
             entry.Collection(f => f.Diretores).Load();
 
 
-            IList<int> listaIdAtores = new List<int>();
+            var listaIdAtores = new List<int>();
             foreach (var item in filme.Atores)
                 listaIdAtores.Add(item.IdAtor);
+
             //Aqui, o contexto fica ciente das alterações
             filme.Atores = AlterarAtores<Atores>(filme,listaIdAtores.ToList(),contexto);
 
@@ -102,7 +107,7 @@ namespace Locadora.Models.AccessLayer.Repositories
             //Como a id de cada ator é requisitada pelo EF, os atores devem ser recuperados primeiro
             //var atores = entidade.Contains<T>(filme); //.Where(a => a.GetType().GetMethod("Contains").Invoke(a, listaObj)).ToList();
 
-            IList<T> atores = new List<T>();
+            var atores = new List<T>();
             foreach (var item in entidade)
                 atores.Add((T) item.GetType().GetMethod("Contains").Invoke(item, listaObj));
             
@@ -149,7 +154,7 @@ namespace Locadora.Models.AccessLayer.Repositories
         private ICollection<T> CriarColecao<T>(IEnumerable<int> idsColecao, 
             BaseContext context, IDictionary<string,string> objectParameters) where T : class, new()
         {
-            IList<T> novaColecao = new List<T>();
+            var novaColecao = new List<T>();
 
             foreach (var id in idsColecao)
             {
@@ -163,9 +168,9 @@ namespace Locadora.Models.AccessLayer.Repositories
             return novaColecao;
         } 
 
-        #endregion "Persistence"
+        #endregion Persistence
 
-        #region "Reading"
+        #region Reading
         public Filme ObterFilme(int idFilme)
         {
             var filme = _contexto.Filme.Find(idFilme);
@@ -197,7 +202,44 @@ namespace Locadora.Models.AccessLayer.Repositories
 
             return diretoresFilme;
         }
-        #endregion "Reading"
+
+        private IEnumerable<Atores> ListaAtores(IEnumerable<int> idAtores)
+        {
+            var listaAtores = new List<Atores>();
+            foreach (var idAtor in idAtores)
+            {
+                var ator = _contexto.Atores.Find(idAtor);
+                listaAtores.Add(ator);
+            }
+
+            return listaAtores;
+        }
+
+        public IEnumerable<Atores> ListaAtores()
+        {
+            return _contexto.Atores.ToList();
+        }
+
+        private IEnumerable<Diretores> ListaDiretores(IEnumerable<int> idDiretores)
+        {
+            var listaDiretores = new List<Diretores>();
+
+            foreach (var idDiretor in idDiretores)
+            {
+                var diretor = _contexto.Diretores.Find(idDiretor);
+                listaDiretores.Add(diretor);
+            }
+
+            return listaDiretores;
+
+        }
+
+        public IEnumerable<Diretores> ListaDiretores()
+        {
+            return _contexto.Diretores.ToList();
+        }
+        
+        #endregion Reading
 
     }
 }
