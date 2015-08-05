@@ -60,5 +60,23 @@ namespace Locadora.Controllers
         {
             return View(CaminhoSucesso);
         }
+        /// <summary>
+        /// Manipula as mensagens de validação exibindo-as de acordo
+        /// </summary>
+        /// <typeparam name="T">ViewModel</typeparam>
+        /// <param name="modelState"></param>
+        /// <param name="campoValidado">campoValidado é o campo da classe model que está sendo validada</param>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        protected ActionResult MsgValidacao<T>(ModelStateDictionary modelState, string campoValidado, T viewModel, string mensagem)
+        {
+            var campo = modelState.Keys.Where(ms => ms == campoValidado).FirstOrDefault(); 
+
+            if (!string.IsNullOrEmpty(campo))
+                ViewBag.Message = mensagem;
+
+            return View(viewModel);
+        }
+
     }
 }

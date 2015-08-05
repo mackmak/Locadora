@@ -1,4 +1,4 @@
-﻿@model Locadora.Models.ViewModels.JogoViewModel
+﻿@model Locadora.Models.ViewModels.CreateMidiaViewModel
 
 @{
     ViewBag.Title = "CreateJogo";
@@ -7,7 +7,6 @@
 
 <h2>CreateJogo</h2>
 
-
 @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
@@ -15,9 +14,6 @@
     <div class="form-horizontal">
         <h4>Jogo</h4>
         <hr />
-        <div class="text-info">
-            @Html.HiddenFor(model => model.Message, htmlAttributes: new { @class = "text-info" })
-        </div>
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.JogoProp.Titulo, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -39,6 +35,7 @@
             @Html.LabelFor(model => model.Imagem, "Capa:", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.TextBoxFor(model => model.Imagem, new { type = "file" })
+                @Html.ValidationMessageFor(model => model.Imagem,"", new { @class = "text-danger"})
             </div>
         </div>
 
@@ -51,9 +48,8 @@
 
         <div class="form-group">
             @Html.Label("Plataformas: ", htmlAttributes: new { @class = "control-label col-md-2" })
-            <table class="col-md-10" style="width:300px">
+            <table class="col-md-10" style="width:300px" id="chkList">
                 <tr>
-                    @* //todo:buscar validação para checkboxes e imagem *@
                     @for (int i = 0; i < Model.ListaConsoles.Count(); i++)
                     {
                         var console = Model.ListaConsoles.ElementAt(i);
@@ -62,15 +58,24 @@
                         string checkboxName = string.Format("JogoProp.PlataformasJogo[{0}]{1}", hiddenValue, strIdConsole);
 
                         <td>
-                            <input type="hidden" name="JogoProp.PlataformasJogo.Index" value="@hiddenValue"/>
+                            <input type="hidden" name="JogoProp.PlataformasJogo.Index" value="@hiddenValue" />
                             <input type="checkbox" name="@checkboxName" value="@console.IdConsole" />
                             <label for="@checkboxName">@console.NomeConsole</label>
                         </td>
                     }
                 </tr>
             </table>
-
         </div>
+        <table>
+            <tr>
+                <td style="width:180px">
+                </td>
+                <td>
+                    <label class="text-danger">@ViewBag.Message</label>
+                </td>
+            </tr>
+        </table>
+        
 
 
         <div class="form-group">

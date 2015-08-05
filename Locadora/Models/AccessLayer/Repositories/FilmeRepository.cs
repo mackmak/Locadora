@@ -77,6 +77,7 @@ namespace Locadora.Models.AccessLayer.Repositories
 
         private DbEntityEntry AtribuiEntryEF(FilmeContext contexto, FilmeViewModel viewModel)
         {
+            //todo: muita atenção ao testar esta parte
             var filme = AtribuirFilme(viewModel);
 
             //Anexa o filme ao EF para que as alterações sejam rastreadas

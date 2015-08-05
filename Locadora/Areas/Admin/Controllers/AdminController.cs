@@ -7,6 +7,8 @@ using Locadora.Models.AccessLayer.Repositories;
 using Locadora.Utils.UnitOfWork;
 using Locadora.Models.BusinessLayer.Contexts;
 using Locadora.Models.BusinessLayer;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Locadora.Areas.Admin.Controllers
 {
@@ -32,7 +34,7 @@ namespace Locadora.Areas.Admin.Controllers
         {
             try
             {
-                return View(new JogoViewModel());
+                return View(new CreateMidiaViewModel());
             }
             catch (Exception)
             {
@@ -43,7 +45,7 @@ namespace Locadora.Areas.Admin.Controllers
 
         // POST: Admin/Admin/Create
         [HttpPost]
-        public ActionResult CreateJogo(JogoViewModel viewModel)
+        public ActionResult CreateJogo(CreateMidiaViewModel viewModel)
         {
             try
             {
@@ -53,7 +55,7 @@ namespace Locadora.Areas.Admin.Controllers
                     return Sucesso();
                 }
                 else
-                    return View(viewModel);
+                    return MsgValidacao<CreateMidiaViewModel>(ModelState, "JogoProp.PlataformasJogo", viewModel, "Uma plataforma deve ser selecionada");
 
             }
             catch (Exception e)
@@ -61,6 +63,7 @@ namespace Locadora.Areas.Admin.Controllers
                 return Erro(e);
             }
         }
+
 
         // GET: Admin/Admin/Alterar/5
         public ActionResult AlterarJogo(int id)

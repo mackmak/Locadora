@@ -67,7 +67,7 @@ namespace Locadora.Models.AccessLayer.Repositories
             entry.Collection(j => j.PlataformasJogo).Load();
 
             //Aqui, o contexto fica ciente das alterações
-            jogo.PlataformasJogo = AlterarPlataformasJogo(jogo.IdMidia, viewModel.ConsolesPostados.IdConsoles, contexto);
+            jogo.PlataformasJogo = AlterarPlataformasJogo(viewModel, contexto);
 
             return entry;
         }
@@ -134,8 +134,11 @@ namespace Locadora.Models.AccessLayer.Repositories
         }
 
 
-        private ICollection<PlataformasJogo> AlterarPlataformasJogo(int idJogo, IEnumerable<int> idConsoles, JogoContext contexto)
+        private ICollection<PlataformasJogo> AlterarPlataformasJogo(JogoViewModel viewModel, JogoContext contexto)
         {
+            //todo:rever este ponto
+            var idConsoles = viewModel.JogoProp.PlataformasJogo.Select(pj => pj.IdConsole);
+            int idJogo = viewModel.JogoProp.IdMidia;
             //A collection deve ser recuperada para alteração, pois a id é requisitada pelo EF
             var plataformasJogo = contexto.PlataformasJogo.Where(pj => pj.IdJogo == idJogo).ToList();
 

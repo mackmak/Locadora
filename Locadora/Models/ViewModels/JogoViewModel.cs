@@ -25,8 +25,6 @@ namespace Locadora.Models.ViewModels
 
         public IList<BusinessLayer.Console> ListaConsolesSelecionados { get; set; }
         
-        public ConsolesPostados ConsolesPostados { get; set; }
-
         public IEnumerable<SelectListItem> ListaGeneros { get { return unitOfWork.Jogo.ListarGeneros(); } }
 
         public JogoViewModel()

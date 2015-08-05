@@ -9,13 +9,14 @@
 
 namespace Locadora.Models.BusinessLayer
 {
-    using System;
-    using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public abstract partial class Midia
     {
         public int IdMidia { get; set; }
+        [Required]
         public string Titulo { get; set; }
+        [Required]
         public string Ano { get; set; }
         public byte[] Capa { get; set; }
         public int IdGenero { get; set; }

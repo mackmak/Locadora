@@ -456,6 +456,8 @@ cite {
 
 .text-danger {
     color: #b94a48;
+    font-family: Arial;
+    font-weight:100;
 }
 
 .text-success {
