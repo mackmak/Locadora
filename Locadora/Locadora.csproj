@@ -208,7 +208,6 @@
     <Compile Include="Models\BusinessLayer\Jogo.cs">
       <DependentUpon>LocadoraModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\BusinessLayer\Metadata\JogoMetadata.cs" />
     <Compile Include="Models\BusinessLayer\Midia.cs">
       <DependentUpon>LocadoraModel.tt</DependentUpon>
     </Compile>
@@ -245,7 +244,6 @@
     </Compile>
     <Compile Include="Models\BusinessLayer\ManageViewModels.cs" />
     <Compile Include="Models\AccessLayer\Repositories\FilmeRepository.cs" />
-    <Compile Include="Models\ViewModels\CreateMidiaViewModel.cs" />
     <Compile Include="Models\ViewModels\MidiaViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />

@@ -35,6 +35,7 @@
             @Html.LabelFor(model => model.FilmeProp.Capa, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.TextBoxFor(model => model.Imagem, new { type = "file" })
+                @Html.ValidationMessageFor(model => model.Imagem, "", new { @class="text-danger"})
             </div>
         </div>
 
@@ -88,39 +89,5 @@
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </div>
-        @section scripts{
-            <script language="javascript" type="text/javascript">
-                function BothWays(list1, List2){
-                    for (var i = 0; i < list1.options.length - 1; i++) {
-                        if(list1.options[i].selected == true){
-                            var selId = list1.options[i].value;
-                            var selText = list1.options[i].text;
-                            var newRow = new Option(selText, selId);
-                            List2.options[List2.length] = newRow;
-                            list1.options[i] = null;
-                        }
-                    }
-                }
-
-                function SortList(sortedItemvalue)
-                {
-                    for (var x = 0; x < sortedItemvalue.length - 1; x++) {
-                        for (var y = x + 1; y < sortedItemvalue.length; y++) {
-                            if (sortedItemvalue[x].text > sortedItemvalue[y].text) {
-                                //Swap values
-                                var id = sortedItemvalue[x].value;
-                                var text = sortedItemvalue[x].text;
-
-                                sortedItemvalue[x].value = sortedItemvalue[y].value;
-                                sortedItemvalue[x].text = sortedItemvalue[y].text;
-
-                                sortedItemvalue[y].value = id;
-                                sortedItemvalue[y].text = text;
-                            }
-                        }
-                    }
-                }
-            </script>
-            }
     </div>
 }

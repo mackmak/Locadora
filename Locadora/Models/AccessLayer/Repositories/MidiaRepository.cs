@@ -12,38 +12,17 @@ namespace Locadora.Models.AccessLayer.Repositories
 {
     public class MidiaRepository : IMidiaRepository
     {
-
-
+        
         public byte[] ObterImagem(MidiaViewModel viewModel)
         {
             byte[] imagem = null;
 
-            var imagemPostada = VerificarImagemPostada(viewModel);
-
-            if (imagemPostada.InputStream != null)
-                imagem = new Streaming().LerImagemPostada(imagemPostada);
+            if (viewModel.Imagem.InputStream != null)
+                imagem = new Streaming().LerImagemPostada(viewModel.Imagem);
             else
                 imagem = System.Text.Encoding.ASCII.GetBytes(viewModel.NomeImagem);
 
             return imagem;
-        }
-
-        private HttpPostedFileBase VerificarImagemPostada(MidiaViewModel viewModel)
-        {
-
-            HttpPostedFileBase imagemPostada = null;
-            CreateMidiaViewModel model = null;
-
-            //Se a imagem é nula, é porque é a classe CreateJogoViewModel
-            if (viewModel.Imagem == null)
-            {
-                model = (CreateMidiaViewModel) viewModel;
-                imagemPostada = model.Imagem;
-            }
-            else
-                imagemPostada = viewModel.Imagem;
-
-            return imagemPostada;
         }
 
 

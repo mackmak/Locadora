@@ -1,4 +1,4 @@
-﻿@model Locadora.Models.ViewModels.CreateMidiaViewModel
+﻿@model Locadora.Models.ViewModels.JogoViewModel
 
 @{
     ViewBag.Title = "CreateJogo";
@@ -7,7 +7,7 @@
 
 <h2>CreateJogo</h2>
 
-@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return VarreduraValidacao()" }))
 {
     @Html.AntiForgeryToken()
 
@@ -35,7 +35,8 @@
             @Html.LabelFor(model => model.Imagem, "Capa:", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.TextBoxFor(model => model.Imagem, new { type = "file" })
-                @Html.ValidationMessageFor(model => model.Imagem,"", new { @class = "text-danger"})
+                <label class="text-danger" id="lblImagemValidacao"></label>
+                <input type="hidden" name="hdnValidacao" value="true"/>
             </div>
         </div>
 
@@ -65,17 +66,17 @@
                     }
                 </tr>
             </table>
+            <input type="hidden" name="hdnValidacao" value="true" />
         </div>
         <table>
             <tr>
-                <td style="width:180px">
-                </td>
+                <td style="width:180px"></td>
                 <td>
-                    <label class="text-danger">@ViewBag.Message</label>
+                    <label class="text-danger" id="lblPlataforma"></label>
                 </td>
             </tr>
         </table>
-        
+
 
 
         <div class="form-group">
@@ -89,4 +90,21 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(function () {
+            var objValidacao1 = {
+                controle: "#Imagem",
+                label: "#lblImagemValidacao",
+                mensagem : "Um arquivo deve ser selecionado"
+            };
+            validacaoTexto(new Array(objValidacao1));
+
+            var objValidacao2 = {
+                controle: "#chkList",
+                label: "#lblPlataforma",
+                mensagem : "Pelo menos uma plataforma deve ser selecionada"
+            };
+            validacaoCheckboxList(objValidacao2);
+        });
+    </script>
 }

@@ -16,7 +16,7 @@ namespace Locadora.Models.AccessLayer.Repositories
     public class JogoRepository : MidiaRepository, IJogoRepository
     {
 
-        #region "ContextWork"
+        #region ContextWork
         private readonly JogoContext _contexto;
 
         public JogoRepository(JogoContext contextoJogo)
@@ -136,9 +136,10 @@ namespace Locadora.Models.AccessLayer.Repositories
 
         private ICollection<PlataformasJogo> AlterarPlataformasJogo(JogoViewModel viewModel, JogoContext contexto)
         {
-            //todo:rever este ponto
+            //todo:atenção aqui
             var idConsoles = viewModel.JogoProp.PlataformasJogo.Select(pj => pj.IdConsole);
             int idJogo = viewModel.JogoProp.IdMidia;
+
             //A collection deve ser recuperada para alteração, pois a id é requisitada pelo EF
             var plataformasJogo = contexto.PlataformasJogo.Where(pj => pj.IdJogo == idJogo).ToList();
 
@@ -166,8 +167,7 @@ namespace Locadora.Models.AccessLayer.Repositories
         public Jogo ObterJogo(int idJogo)
         {
             Jogo jogo = null;
-
-
+            
             jogo = _contexto.Jogo.Where(j => j.IdMidia == idJogo).Select(j => j as Jogo).FirstOrDefault();
             var entry = _contexto.Entry(jogo);
 

@@ -34,7 +34,7 @@ namespace Locadora.Areas.Admin.Controllers
         {
             try
             {
-                return View(new CreateMidiaViewModel());
+                return View(new JogoViewModel());
             }
             catch (Exception)
             {
@@ -45,7 +45,7 @@ namespace Locadora.Areas.Admin.Controllers
 
         // POST: Admin/Admin/Create
         [HttpPost]
-        public ActionResult CreateJogo(CreateMidiaViewModel viewModel)
+        public ActionResult CreateJogo(JogoViewModel viewModel)
         {
             try
             {
@@ -55,8 +55,8 @@ namespace Locadora.Areas.Admin.Controllers
                     return Sucesso();
                 }
                 else
-                    return MsgValidacao<CreateMidiaViewModel>(ModelState, "JogoProp.PlataformasJogo", viewModel, "Uma plataforma deve ser selecionada");
-
+                    return MsgValidacao<JogoViewModel>(ModelState, 
+                        "JogoProp.PlataformasJogo", viewModel, "Uma plataforma deve ser selecionada");
             }
             catch (Exception e)
             {
